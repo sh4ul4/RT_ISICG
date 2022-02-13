@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\io">
+      <UniqueIdentifier>{fb114249-6afb-4c26-96d2-1f8eb09ee1c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\io">
+      <UniqueIdentifier>{de8b2f88-86a8-48d6-8276-f46c0824b4b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects">
+      <UniqueIdentifier>{2d36f48d-c494-4003-95ad-7352250bd92e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects">
+      <UniqueIdentifier>{70d113a6-2d35-4eb5-8a1a-63ecebacef34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\materials">
+      <UniqueIdentifier>{68d11c17-3afb-482d-99f6-c5187d092043}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\materials">
+      <UniqueIdentifier>{966871b4-821c-4460-9977-fa9c9b354ac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\integrators">
+      <UniqueIdentifier>{4afb2b9f-8dce-44a3-805d-19d671af5227}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\integrators">
+      <UniqueIdentifier>{072b7456-4d7e-41aa-97f1-ff3718543209}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lights">
+      <UniqueIdentifier>{57201a0d-2142-4af6-b776-6263f4d8e83a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lights">
+      <UniqueIdentifier>{80d07e3b-853c-43ec-84b9-09589b2fc9f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cameras">
+      <UniqueIdentifier>{a7f72c10-2c0b-4ca9-b4d1-17d171cfac0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cameras">
+      <UniqueIdentifier>{67eedaa1-79ed-41c5-bf78-2b044d3a2f8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{f6e4a35e-f01d-4c3e-960d-bb92b67fb620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{23b03c7a-86c3-40d8-b23e-bad8a527c443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\geometry">
+      <UniqueIdentifier>{c8d61efc-1283-4a53-8c29-910c18fdf8ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\geometry">
+      <UniqueIdentifier>{618845aa-171b-4533-b6e5-ff84a164de78}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\sphere.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cameras\perspective_camera.cpp">
+      <Filter>Source Files\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\console_progress_bar.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry\sphere_geometry.cpp">
+      <Filter>Source Files\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\integrators\ray_cast_integrator.cpp">
+      <Filter>Source Files\integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry\PlaneGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lights\PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\integrators\DirectLightingIntegrator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\defines.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\stb_include.hpp">
+      <Filter>Header Files\io</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\base_object.hpp">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ray.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\sphere.hpp">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\materials\base_material.hpp">
+      <Filter>Header Files\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lights\base_light.hpp">
+      <Filter>Header Files\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="src\integrators\ray_cast_integrator.hpp">
+      <Filter>Header Files\integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cameras\perspective_camera.hpp">
+      <Filter>Header Files\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cameras\base_camera.hpp">
+      <Filter>Header Files\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="src\integrators\base_integrator.hpp">
+      <Filter>Header Files\integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\console_progress_bar.hpp">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\geometry\base_geometry.hpp">
+      <Filter>Header Files\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\geometry\sphere_geometry.hpp">
+      <Filter>Header Files\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\chrono.hpp">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\texture.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\materials\color_material.hpp">
+      <Filter>Header Files\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hit_record.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lights\light_sample.hpp">
+      <Filter>Header Files\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="src\geometry\PlaneGeometry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\Plane.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lights\PointLight.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\integrators\DirectLightingIntegrator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
