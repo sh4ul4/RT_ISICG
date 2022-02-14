@@ -8,8 +8,8 @@ namespace RT_ISICG
 	{
 		const float pdf		  = 1.f;
 		const float distance  = glm::distance( position, p_point );
-		const Vec3f direction = glm::normalize( position - p_point );
-		const Vec3f radiance  = _color * _power * ( ( 1 / distance ) * ( 1 / distance ) );
+		const Vec3f direction = -glm::normalize( position - p_point );
+		const Vec3f radiance  = (_color * _power) / (distance * distance);
 		return LightSample( direction, distance, radiance, pdf );
 	}
 } // namespace RT_ISICG

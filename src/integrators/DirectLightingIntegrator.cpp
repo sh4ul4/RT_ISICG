@@ -17,9 +17,9 @@ namespace RT_ISICG
 			for ( BaseLight * bl : p_scene.getLights() )
 			{
 				const LightSample ls = bl->sample( hitRecord._point );
-				const Ray		  shadowRay( hitRecord._point, ls._direction );
-				HitRecord		  tmp;
-				//if ( !p_scene.intersect( shadowRay, 0, ls._distance, tmp ) )
+				Ray		  shadowRay( hitRecord._point, -ls._direction );
+				shadowRay.offset( hitRecord._normal );
+				if ( !p_scene.intersectAny( shadowRay, 0, ls._distance ) )
 					res += _directLighting( ls, hitRecord, cosTheta );
 			}
 			return res;
@@ -32,9 +32,9 @@ namespace RT_ISICG
 
 	Vec3f DirectLightingIntegrator::_directLighting( const LightSample& ls,
 													 const HitRecord &		 hitRecord,
-													 const float			 cosTheta ) const
+													 const float			 cosTheta2 ) const
 	{
-		const float cosTheta2 = glm::dot( -ls._direction, hitRecord._normal );
-		return hitRecord._object->getMaterial()->getFlatColor() * ls._radiance * cosTheta2;
+		const float cosTheta = glm::dot( -ls._direction, hitRecord._normal );
+		return hitRecord._object->getMaterial()->getFlatColor() * ls._radiance * cosTheta;
 	}
 } // namespace RT_ISICG

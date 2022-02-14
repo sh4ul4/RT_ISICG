@@ -23,6 +23,10 @@ namespace RT_ISICG
 								const float p_tMax,
 								HitRecord & p_hitRecord ) const override;
 
+		virtual bool intersectAny( const Ray & p_ray,
+								const float p_tMin,
+								const float p_tMax ) const override;
+
 	  private:
 		SphereGeometry _geometry;
 	};
