@@ -20,11 +20,14 @@ namespace RT_ISICG
 
 		inline void setNbPixelSamples( const int p_nbPixelSamples ) { _nbPixelSamples = p_nbPixelSamples; }
 
+		inline void setNbLightSamples( const int p_nbLightSamples ) { _nbLightSamples = p_nbLightSamples; }
+
 		float renderImage( const Scene & p_scene, const BaseCamera * p_camera, Texture & p_texture );
 
 	  private:
 		BaseIntegrator * _integrator	 = nullptr;
 		int				 _nbPixelSamples = 1;
+		int				 _nbLightSamples = 1;
 	};
 } // namespace RT_ISICG
 

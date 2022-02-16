@@ -5,7 +5,8 @@ namespace RT_ISICG
 	Vec3f RayCastIntegrator::Li( const Scene & p_scene,
 								 const Ray &   p_ray,
 								 const float   p_tMin,
-								 const float   p_tMax ) const
+								 const float   p_tMax,
+								 const float   p_nbLightSamples = 1 ) const
 	{
 		HitRecord hitRecord;
 		if ( p_scene.intersect( p_ray, p_tMin, p_tMax, hitRecord ) )

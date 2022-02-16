@@ -5,8 +5,8 @@
 #include "utils/random.hpp"
 
 //#define TP1_EX1
-//#define TP1_EX2
-#define TP1_EX3
+//#define TP1_EX2 // without antialiasing
+#define TP1_EX3 // with antialiasing
 
 namespace RT_ISICG
 {
@@ -51,7 +51,7 @@ namespace RT_ISICG
 
 		progressBar.start( height, 50 );
 		chrono.start();
-
+#pragma omp parallel for
 		for ( int j = 0; j < height; j++ )
 		{
 			for ( int i = 0; i < width; i++ )
@@ -69,14 +69,14 @@ namespace RT_ISICG
 				const Ray ray = p_camera->generateRay( ( i + 0.5f ) / ( width - 1 ), ( j + 0.5f ) / ( height - 1 ) );
 #endif
 #ifdef TP1_EX2
-					Vec3f color = _integrator->Li( p_scene, ray, 0, 1000 );
-					p_texture.setPixel( i, j, color );
+					Vec3f color = _integrator->Li( p_scene, ray, 0, 1000, _nbLightSamples );
+					p_texture.setPixel( i, j, glm::clamp(color,Vec3f(0,0,0),Vec3f(1,1,1) ));
 #endif
 #ifdef TP1_EX1
 					p_texture.setPixel( i, j, ( ray.getDirection() + 1.f ) * 0.5f );
 #endif
 #ifdef TP1_EX3
-					Vec3f tmpcolor = _integrator->Li( p_scene, ray, 0, 1000 );
+					Vec3f tmpcolor = _integrator->Li( p_scene, ray, 0, 1000, _nbLightSamples );
 					color += tmpcolor;
 				}
 				color /= _nbPixelSamples;

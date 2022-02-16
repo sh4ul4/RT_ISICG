@@ -15,10 +15,13 @@ namespace RT_ISICG
 
 		virtual LightSample sample( const Vec3f & p_point ) const = 0;
 
+		bool isSurface() const { return _isSurface;}
+
 	  protected:
 		// TODO: give a name, like objects and materials
 		Vec3f _color = WHITE;
 		float _power;
+		bool  _isSurface = false;
 	};
 
 } // namespace RT_ISICG

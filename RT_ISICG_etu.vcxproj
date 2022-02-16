@@ -131,6 +131,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\lights\QuadLight.cpp" />
     <ClCompile Include="src\integrators\DirectLightingIntegrator.cpp" />
     <ClCompile Include="src\lights\PointLight.cpp" />
     <ClCompile Include="src\objects\Plane.cpp" />
@@ -155,6 +157,7 @@
     <ClCompile Include="src\utils\console_progress_bar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\lights\QuadLight.hpp" />
     <ClInclude Include="src\integrators\DirectLightingIntegrator.hpp" />
     <ClInclude Include="src\lights\PointLight.hpp" />
     <ClInclude Include="src\objects\Plane.hpp" />

@@ -13,7 +13,10 @@ namespace RT_ISICG
 
 		const IntegratorType getType() const override { return IntegratorType::DIRECT_LIGHTING; }
 
-		Vec3f Li( const Scene & p_scene, const Ray & p_ray, const float p_tMin, const float p_tMax ) const;
+		Vec3f Li( const Scene & p_scene,
+				  const Ray &	p_ray,
+				  const float	p_tMin,
+				  const float	p_tMax, const float p_nbLightSamples = 1 ) const;
 
 	  private:
 		Vec3f _directLighting( const LightSample & ls, const HitRecord & hitRecord, const float cosTheta ) const;
