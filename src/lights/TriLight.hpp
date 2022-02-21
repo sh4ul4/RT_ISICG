@@ -6,18 +6,14 @@
 
 namespace RT_ISICG
 {
-	class QuadLight : public BaseLight
+	class TriLight : public BaseLight
 	{
-		Vec3f _position, _u, _v, _n;
+		Vec3f _a, _b, _c, _n;
 		float _area;
 
 	  public:
-		QuadLight() = delete;
-		QuadLight( const Vec3f & position,
-				   const Vec3f & u,
-				   const Vec3f & v,
-				   const Vec3f & color,
-				   const float	 power = 1.f );
+		TriLight() = delete;
+		TriLight( const Vec3f & a, const Vec3f & b, const Vec3f & c, const Vec3f & color, const float power = 1.f );
 		LightSample sample( const Vec3f & p_point ) const;
 	};
 } // namespace RT_ISICG

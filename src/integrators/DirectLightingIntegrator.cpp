@@ -17,12 +17,12 @@ namespace RT_ISICG
 			const float cosTheta = glm::dot( -p_ray.getDirection(), hitRecord._normal );
 			for ( BaseLight * bl : p_scene.getLights() )
 			{
-				const LightSample ls = bl->sample( hitRecord._point );
 				if ( bl->isSurface() )
 				{
 					Vec3f tmp( 0.f );
 					for ( size_t i = 0; i < p_nbLightSamples; i++ )
 					{
+						const LightSample ls = bl->sample( hitRecord._point );
 						Ray shadowRay( hitRecord._point, -ls._direction );
 						shadowRay.offset( hitRecord._normal );
 						if ( !p_scene.intersectAny( shadowRay, 0, ls._distance ) )
@@ -33,6 +33,7 @@ namespace RT_ISICG
 				}
 				else
 				{
+					const LightSample ls = bl->sample( hitRecord._point );
 					Ray shadowRay( hitRecord._point, -ls._direction );
 					shadowRay.offset( hitRecord._normal );
 					if ( !p_scene.intersectAny( shadowRay, 0, ls._distance ) )

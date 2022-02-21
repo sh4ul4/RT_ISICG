@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\lights\GlobeLight.cpp" />
     <ClCompile Include="src\lights\QuadLight.cpp" />
     <ClCompile Include="src\integrators\DirectLightingIntegrator.cpp" />
     <ClCompile Include="src\lights\PointLight.cpp" />
@@ -155,8 +156,10 @@
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\utils\console_progress_bar.cpp" />
+    <ClCompile Include="src\lights\TriLight.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\lights\GlobeLight.hpp" />
     <ClInclude Include="src\lights\QuadLight.hpp" />
     <ClInclude Include="src\integrators\DirectLightingIntegrator.hpp" />
     <ClInclude Include="src\lights\PointLight.hpp" />
@@ -183,6 +186,7 @@
     <ClInclude Include="src\texture.hpp" />
     <ClInclude Include="src\utils\chrono.hpp" />
     <ClInclude Include="src\utils\console_progress_bar.hpp" />
+    <ClInclude Include="src\lights\TriLight.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

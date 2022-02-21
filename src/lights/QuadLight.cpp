@@ -11,14 +11,15 @@ namespace RT_ISICG
 		  _n( glm::normalize( glm::cross( _u, _v ) ) )
 	{
 		_isSurface = true;
+		_area	   = glm::length( _u ) * glm::length( _v );
 	}
 
-	LightSample QuadLight::sample( const Vec3f & p_point ) const {
+	LightSample QuadLight::sample( const Vec3f & p_point ) const
+	{
 		const Vec3f randPos( _position + _u * randomFloat() + _v * randomFloat() );
-		const float area	  = glm::length( _u ) * glm::length( _v );
 		const float distance  = glm::distance( randPos, p_point );
 		const Vec3f direction = glm::normalize( randPos - p_point );
-		const float pdf		  = (1.f/area) * (distance * distance) / glm::dot(_n, direction);
+		const float pdf		  = ( 1.f / _area ) * ( distance * distance ) / glm::dot( _n, direction );
 		const Vec3f radiance  = ( _color * _power ) / pdf;
 		return LightSample( -direction, distance, radiance, pdf );
 	}
