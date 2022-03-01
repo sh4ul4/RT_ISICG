@@ -6,6 +6,9 @@
 #include "lights/QuadLight.hpp"
 #include "lights/TriLight.hpp"
 #include "lights/GlobeLight.hpp"
+#include "materials/lambert_material.hpp"
+#include "materials/Plasticmaterial.hpp"
+#include "materials/MatteMaterial.hpp"
 
 namespace RT_ISICG
 {
@@ -38,9 +41,13 @@ namespace RT_ISICG
 		_addMaterial( new ColorMaterial( "Red", RED ) );
 		_addMaterial( new ColorMaterial( "Grey", GREY ) );
 
+		_addMaterial( new LambertMaterial( "lambert1", GREY ) );
+		_addMaterial( new PlasticMaterial( "plastic", GREY, GREY ) );
+		_addMaterial( new MatteMaterial( "matte", GREY ) );
+
 		// Link objects and materials.
-		_attachMaterialToObject( "Grey", "Sphere1" );
-		_attachMaterialToObject( "Red", "Plane1" );
+		_attachMaterialToObject( "plastic", "Sphere1" );
+		_attachMaterialToObject( "matte", "Plane1" );
 
 		// Add lighting
 		_addLight( new PointLight( Vec3f( 0.f, 0.f, -2.f ), WHITE, 60.f ) );
