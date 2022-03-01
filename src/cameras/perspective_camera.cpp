@@ -26,8 +26,8 @@ namespace RT_ISICG
 		float adj			   = _focalDistance;
 		float hyp			   = adj / sin( glm::radians( _fovy ) / 2 );
 		float opp			   = sqrt( hyp * hyp ) - sqrt( adj * adj );
-		_viewportV			   = _v * ( opp * 2 );
-		_viewportU			   = _u * ( ( opp * 2 ) * _aspectRatio );
+		_viewportV			   = _v * ( opp );
+		_viewportU			   = _u * ( ( opp ) * _aspectRatio );
 		_viewportTopLeftCorner = _position - _w * _focalDistance - ( _viewportU / 2.f ) + ( _viewportV / 2.f );
 	}
 

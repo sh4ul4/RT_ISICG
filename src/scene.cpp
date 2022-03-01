@@ -36,19 +36,20 @@ namespace RT_ISICG
 		// Add materials.
 		_addMaterial( new ColorMaterial( "Blue", BLUE ) );
 		_addMaterial( new ColorMaterial( "Red", RED ) );
+		_addMaterial( new ColorMaterial( "Grey", GREY ) );
 
 		// Link objects and materials.
-		_attachMaterialToObject( "Blue", "Sphere1" );
+		_attachMaterialToObject( "Grey", "Sphere1" );
 		_attachMaterialToObject( "Red", "Plane1" );
 
 		// Add lighting
-		//_addLight( new PointLight( Vec3f( 1.f, 10.f, 1.f ), WHITE, 100.f ) );
+		_addLight( new PointLight( Vec3f( 0.f, 0.f, -2.f ), WHITE, 60.f ) );
 		//_addLight(new QuadLight( Vec3f( 1.f, 10.f, 2.f ), Vec3f( -2.f, 0.f, 0.f ), Vec3f( 0.f, 0.f, 2.f ), WHITE, 20.f ) );
 
 		//_addLight(new TriLight( Vec3f( 1.f, 10.f, 2.f ), Vec3f( 3.f, 1.f, 2.f ), Vec3f( 1.f, 1.f, 4.f ), WHITE, 60.f ) );
 
-		_addLight( new GlobeLight( Vec3f( 2.f, 4.f, 3.f ), 1.f, WHITE, 5.f ) );
-		_addLight( new GlobeLight( Vec3f( -2.f, 4.f, 3.f ), 1.f, WHITE, 5.f ) );
+		//_addLight( new GlobeLight( Vec3f( 2.f, 4.f, 3.f ), 1.f, WHITE, 5.f ) );
+		//_addLight( new GlobeLight( Vec3f( -2.f, 4.f, 3.f ), 1.f, WHITE, 5.f ) );
 	}
 
 	bool Scene::intersect( const Ray & p_ray, const float p_tMin, const float p_tMax, HitRecord & p_hitRecord ) const
