@@ -46,7 +46,7 @@ namespace RT_ISICG
 		_addMaterial( new MatteMaterial( "matte", GREY ) );
 
 		// Link objects and materials.
-		_attachMaterialToObject( "plastic", "Sphere1" );
+		_attachMaterialToObject( "matte", "Sphere1" );
 		_attachMaterialToObject( "matte", "Plane1" );
 
 		// Add lighting

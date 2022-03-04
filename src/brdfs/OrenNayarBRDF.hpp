@@ -22,8 +22,7 @@ namespace RT_ISICG
 			const float beta	  = glm::min( thetai, thetao );
 			const float A		  = 1.f - 0.5f * ( sigmaPow2 / ( sigmaPow2 + 0.33f ) );
 			const float B		  = 0.45f * ( sigmaPow2 / ( sigmaPow2 + 0.09f ) );
-			return _kd * INV_PIf * 1.f
-				   / ( A + ( B * glm::max( 0.f, glm::cos( phii - phio ) ) * glm::sin( alpha ) ) * glm::sin( beta ) );
+			return _kd * INV_PIf * ( A + ( B * glm::max( 0.f, glm::cos( phii - phio ) ) * glm::sin( alpha ) * glm::tan( beta ) ) );
 		}
 
 		inline const Vec3f & getKd() const { return _kd; }

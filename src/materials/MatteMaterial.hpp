@@ -7,9 +7,18 @@ namespace RT_ISICG
 {
 	class MatteMaterial : public BaseMaterial
 	{
+		Vec3f polar( const Vec3f & cartesian ) const
+		{
+			const float radius
+				= sqrt( cartesian.x * cartesian.x + cartesian.y * cartesian.y + cartesian.z * cartesian.z );
+			const float theta = glm::atan( cartesian.y, cartesian.x );
+			//const float theta = glm::acos( glm::dot( Vec2f( 1.f, 0.f ), Vec2f( cartesian.x, cartesian.y ) ) );
+			const float phi	  = glm::acos( cartesian.z );
+			return Vec3f( phi, theta, radius );
+		}
 	  public:
 		MatteMaterial( const std::string & p_name, const Vec3f & p_diffuse )
-			: BaseMaterial( p_name ), _brdf( p_diffuse, 0.f )
+			: BaseMaterial( p_name ), _brdf( p_diffuse, 0.6f )
 		{
 		}
 
@@ -19,8 +28,8 @@ namespace RT_ISICG
 					 const HitRecord &	 p_hitRecord,
 					 const LightSample & p_lightSample ) const override
 		{
-			const Vec3f wi = glm::polar( glm::normalize( p_lightSample._direction ) );
-			const Vec3f wo = glm::polar( glm::normalize( -p_ray.getDirection() ) );
+			const Vec3f wi = polar( glm::normalize( p_lightSample._direction ) );
+			const Vec3f wo = polar( glm::normalize( -p_ray.getDirection() ) );
 			return _brdf.evaluate(wi, wo);
 		}
 

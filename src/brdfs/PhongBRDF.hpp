@@ -1,7 +1,7 @@
 #pragma once
 #include "defines.hpp"
 
-#define BLINNPHONG
+//#define BLINNPHONG
 
 namespace RT_ISICG
 {
@@ -22,7 +22,7 @@ namespace RT_ISICG
 			const float cosAlpha = glm::dot( wo, wr );
 			return _ks * pow( cosAlpha, _s );
 #else
-			const float cosAlpha = glm::dot( wo - p_lightSample._direction, p_hitRecord._normal );
+			const float cosAlpha = glm::dot( glm::normalize(wo - p_lightSample._direction), p_hitRecord._normal );
 			return _ks * pow( cosAlpha, _s );
 #endif
 		}
