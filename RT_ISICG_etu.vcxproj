@@ -159,6 +159,7 @@
     <ClCompile Include="src\lights\TriLight.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\brdfs\CookTorrance.hpp" />
     <ClInclude Include="src\brdfs\OrenNayarBRDF.hpp" />
     <ClInclude Include="src\brdfs\PhongBRDF.hpp" />
     <ClInclude Include="src\brdfs\lambert_brdf.hpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="src\integrators\DirectLightingIntegrator.hpp" />
     <ClInclude Include="src\lights\PointLight.hpp" />
     <ClInclude Include="src\materials\lambert_material.hpp" />
+    <ClInclude Include="src\materials\RealisticMaterial.hpp" />
     <ClInclude Include="src\objects\Plane.hpp" />
     <ClInclude Include="src\geometry\PlaneGeometry.hpp" />
     <ClInclude Include="src\cameras\base_camera.hpp" />

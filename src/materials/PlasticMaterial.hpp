@@ -5,7 +5,7 @@
 #include "brdfs/lambert_brdf.hpp"
 
 #define SPECULAR 0.3f
-#define SPECULAR_LEN 64.f
+#define SPECULAR_LEN 8.f
 
 namespace RT_ISICG
 {

@@ -18,12 +18,19 @@ namespace RT_ISICG
 
 	class Scene
 	{
+		void tp1( Vec3f & cameraPosition, Vec3f & cameraLookAt );
+		void tp2( Vec3f & cameraPosition, Vec3f & cameraLookAt );
+		void tp3( Vec3f & cameraPosition, Vec3f & cameraLookAt );
+		void tp4( Vec3f & cameraPosition, Vec3f & cameraLookAt );
+		void tp5( Vec3f & cameraPosition, Vec3f & cameraLookAt );
+
+
 	  public:
 		Scene();
 		~Scene();
 
 		// Hard coded initialization.
-		void init();
+		void init( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 
 		// Initialization from file.
 		void init( const std::string & p_path ) { throw std::exception( "Not implemented !" ); }

@@ -211,5 +211,11 @@
     <ClInclude Include="src\brdfs\OrenNayarBRDF.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\brdfs\CookTorrance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\materials\RealisticMaterial.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -13,17 +13,13 @@ namespace RT_ISICG
 		Texture img = Texture( imgWidth, imgHeight );
 
 		// Create and init scene.
+		Vec3f cameraPos( 0.f );
+		Vec3f cameraLookAt( 0.f, 0.f, 1.f );
 		Scene scene;
-		scene.init();
+		scene.init( cameraPos, cameraLookAt );
 
 		// Create a perspective camera.
-		//PerspectiveCamera camera( float( imgWidth ) / imgHeight );
-		PerspectiveCamera camera(
-			Vec3f( 0.f, 0.f, 0.f ), Vec3f( 0, 0, 1 ), Vec3f( 0, 1, 0 ), 60, float( imgWidth ) / imgHeight );
-		//PerspectiveCamera camera(
-		//	Vec3f( 1.f, 0.f, 0.f ), Vec3f( 1, 0, 1 ), Vec3f( 0, 1, 0 ), 60, float( imgWidth ) / imgHeight );
-		//PerspectiveCamera camera(
-		//	Vec3f( 0.f, 1.f, 0.f ), Vec3f( 0, 1, 1 ), Vec3f( 0, 1, 0 ), 60, float( imgWidth ) / imgHeight );
+		PerspectiveCamera camera( cameraPos, cameraLookAt, Vec3f( 0.f, 1.f, 0.f ), 60.f, float( imgWidth ) / imgHeight );
 
 		// Create and setup the renderer.
 		Renderer renderer;

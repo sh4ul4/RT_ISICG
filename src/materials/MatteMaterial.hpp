@@ -17,8 +17,8 @@ namespace RT_ISICG
 			return Vec3f( phi, theta, radius );
 		}
 	  public:
-		MatteMaterial( const std::string & p_name, const Vec3f & p_diffuse )
-			: BaseMaterial( p_name ), _brdf( p_diffuse, 0.6f )
+		MatteMaterial( const std::string & p_name, const Vec3f & p_diffuse, const float p_sigma )
+			: BaseMaterial( p_name ), _brdf( p_diffuse, p_sigma )
 		{
 		}
 

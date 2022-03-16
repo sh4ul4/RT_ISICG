@@ -30,7 +30,7 @@ namespace RT_ISICG
 		inline const Vec3f & getKs() const { return _ks; }
 
 	  private:
-		float _s  = 8;
+		float _s  = 1.f;
 		Vec3f _ks = WHITE;
 	};
 } // namespace RT_ISICG
