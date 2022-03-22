@@ -8,19 +8,10 @@ namespace RT_ISICG
 {
 	class RealisticMaterial : public BaseMaterial
 	{
-		Vec3f polar( const Vec3f & cartesian ) const
-		{
-			const float radius
-				= sqrt( cartesian.x * cartesian.x + cartesian.y * cartesian.y + cartesian.z * cartesian.z );
-			const float theta = glm::atan( cartesian.y, cartesian.x );
-			// const float theta = glm::acos( glm::dot( Vec2f( 1.f, 0.f ), Vec2f( cartesian.x, cartesian.y ) ) );
-			const float phi = glm::acos( cartesian.z );
-			return Vec3f( phi, theta, radius );
-		}
 	  public:
-		RealisticMaterial( const std::string & p_name, const Vec3f & p_diffuse, const Vec3f & p_specular )
+		RealisticMaterial( const std::string & p_name, const Vec3f & p_diffuse, const Vec3f & p_specular, const float p_metalness )
 			: BaseMaterial( p_name ), _diffuse( p_diffuse, 0.6f ),
-			  _specular( p_specular, 0.3f, Vec3f( ( 1.f, 0.85f, 0.57f ) ) ), _metalness(1.f)
+			  _specular( p_specular, 0.3f, Vec3f( ( 1.f, 0.85f, 0.57f ) ) ), _metalness( p_metalness )
 		{
 		}
 
@@ -30,9 +21,11 @@ namespace RT_ISICG
 					 const HitRecord &	 p_hitRecord,
 					 const LightSample & p_lightSample ) const override
 		{
-			const Vec3f wi = polar( glm::normalize( p_lightSample._direction ) );
-			const Vec3f wo = polar( glm::normalize( -p_ray.getDirection() ) );
-			return ( 1 - _metalness ) * _diffuse.evaluate( wi, wo )
+			const Vec3f wo = glm::normalize( -p_lightSample._direction );
+			const Vec3f wi = glm::normalize( -p_ray.getDirection() );
+			//const Vec3f wo = -p_lightSample._direction;
+			//const Vec3f wi = -p_ray.getDirection();
+			return ( 1 - _metalness ) * _diffuse.evaluate( wi, wo, p_hitRecord._normal )
 				   + _metalness * _specular.evaluate( wi, wo, p_hitRecord._normal );
 		}
 

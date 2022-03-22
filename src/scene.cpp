@@ -11,7 +11,7 @@
 #include "materials/MatteMaterial.hpp"
 #include "materials/RealisticMaterial.hpp"
 
-#define _CURRENT_TP 4
+#define _CURRENT_TP 5
 
 namespace RT_ISICG
 {
@@ -91,7 +91,7 @@ namespace RT_ISICG
 		_addMaterial( new LambertMaterial( "lambert", GREY ) );
 		_addMaterial( new PlasticMaterial( "plastic", GREY, GREY ) );
 		_addMaterial( new MatteMaterial( "matte", GREY, 0.6f ) );
-		_addMaterial( new RealisticMaterial( "realistic", WHITE, WHITE ) );
+		_addMaterial( new RealisticMaterial( "realistic", GREY, GREY, 0.5f ) );
 
 		// Link objects and materials.
 		_attachMaterialToObject( "lambert", "Plane" );

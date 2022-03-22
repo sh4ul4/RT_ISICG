@@ -10,19 +10,29 @@ namespace RT_ISICG
 	  public:
 		OrenNayarBRDF( const Vec3f & p_kd, const float p_sigma ) : _kd( p_kd ), _sigma(p_sigma) {};
 
-		// * INV_PIf : could be done in the constructor...
-		inline Vec3f evaluate( const Vec3f & wi, const Vec3f & wo ) const
+		inline Vec3f evaluate( const Vec3f & wi, const Vec3f & wo, const Vec3f& n ) const
 		{
-			const float sigmaPow2 = _sigma * _sigma;
-			const float phii	  = wi.x;
-			const float phio	  = wo.x;
-			const float thetai	  = wi.y;
-			const float thetao	  = wo.y;
-			const float alpha	  = glm::max( thetai, thetao );
-			const float beta	  = glm::min( thetai, thetao );
-			const float A		  = 1.f - 0.5f * ( sigmaPow2 / ( sigmaPow2 + 0.33f ) );
-			const float B		  = 0.45f * ( sigmaPow2 / ( sigmaPow2 + 0.09f ) );
-			return _kd * INV_PIf * ( A + ( B * glm::max( 0.f, glm::cos( phii - phio ) ) * glm::sin( alpha ) * glm::tan( beta ) ) );
+			const float cosPhiWi = glm::dot( wi, n );
+			const float cosPhiWo = glm::dot( wo, n );
+
+			const float phiWi = glm::acos( cosPhiWi );
+			const float phiWo = glm::acos( cosPhiWo );
+
+			const Vec3f projWi		 = wi - n * cosPhiWi;
+			const Vec3f projWo		 = wo - n * cosPhiWo;
+
+			const float sigma2 = _sigma * _sigma;
+
+			const float A = 1.f - .5f * sigma2 / ( sigma2 + .33f );
+			const float B = .45f * sigma2 / ( sigma2 + .09f );
+
+			const float alpha = glm::max( phiWi, phiWo );
+			const float beta  = glm::min( phiWi, phiWo );
+
+			return _kd * INV_PIf
+				   * ( A
+					   + B * glm::max( glm::dot( glm::normalize( projWi ), glm::normalize( projWo ) ), 0.f )
+							 * glm::sin( alpha ) * glm::tan( beta ) );
 		}
 
 		inline const Vec3f & getKd() const { return _kd; }

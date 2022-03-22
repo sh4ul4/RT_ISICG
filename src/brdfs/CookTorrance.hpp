@@ -9,12 +9,12 @@ namespace RT_ISICG
 
 	  public:
 		CookTorranceBRDF( const Vec3f & p_ks, const float p_roughness, const Vec3f & p_F0 )
-			: _ks( p_ks ), _theta( p_roughness ) {};
+			: _ks( p_ks ), _F0(p_F0), _theta( p_roughness ) {};
 
 		inline Vec3f evaluate( const Vec3f & wi, const Vec3f & wo, const Vec3f& n ) const
 		{
 			const float alpha = _theta * _theta;
-			const Vec3f h	  = ( wo + wi ) / glm::length( wo + wi );
+			const Vec3f h	  = glm::normalize( wo + wi );
 			float		D
 				= ( alpha * alpha ) / ( PIf * pow( powf( glm::dot( n, h ), 2 ) * ( alpha * alpha - 1.f ) + 1.f, 2 ) );
 
