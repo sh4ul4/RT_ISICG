@@ -21,7 +21,9 @@ namespace RT_ISICG
 		inline Vec3f computeNormal( const Vec3f & p_point ) const
 		{
 			/// TODO !
-			return glm::normalize(p_point - _center);
+			Vec3f res = glm::normalize( p_point - _center );
+			if ( glm::distance( p_point, _center ) < _radius ) res *= -1.f;
+			return glm::normalize( p_point - _center ); // res;
 		}
 
 	  private:

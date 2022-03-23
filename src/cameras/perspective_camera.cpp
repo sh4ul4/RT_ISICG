@@ -16,7 +16,7 @@ namespace RT_ISICG
 		: BaseCamera( p_position ), _fovy( p_fovy ), _aspectRatio( p_aspectRatio )
 	{
 		_v = glm::normalize( p_up );
-		_w = -glm::normalize( p_lookAt - p_position );
+		_w = -glm::normalize( p_lookAt );
 		_u = glm::normalize( glm::cross( _v, _w ) );
 		_updateViewport();
 	}

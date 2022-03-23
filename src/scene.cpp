@@ -10,6 +10,8 @@
 #include "materials/Plasticmaterial.hpp"
 #include "materials/MatteMaterial.hpp"
 #include "materials/RealisticMaterial.hpp"
+#include "materials/MirrorMaterial.hpp"
+#include "materials/TransparentMaterial.hpp"
 
 #define _CURRENT_TP 5
 
@@ -18,11 +20,11 @@ namespace RT_ISICG
 	void Scene::tp1( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
 		// Camera position & orientation
-		cameraPosition = Vec3f( 4.f, -1.f, 0.f );
-		cameraLookAt   = Vec3f( -1.f, -1.f, 2.f );
+		cameraPosition = Vec3f( 0.f, 0.f, -2.f );
+		cameraLookAt   = Vec3f( 0.f, 0.f, 79.f );
 
 		// Add objects.
-		_addObject( new Sphere( "Sphere", Vec3f( 0.f, 0.f, 3.f ), 1.f ) );
+		_addObject( new Sphere( "Sphere", Vec3f( 0.f, 0.f, 3.5f ), 1.f ) );
 
 		// Add materials.
 		_addMaterial( new ColorMaterial( "Blue", BLUE ) );
@@ -55,7 +57,7 @@ namespace RT_ISICG
 	void Scene::tp3( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
 		// Add objects.
-		_addObject( new Sphere( "Sphere", Vec3f( 0.f, 0.f, 3.f ), 1.f ) );
+		_addObject( new Sphere( "Sphere", Vec3f( 0.f, 0.f, 5.f ), 1.f ) );
 		_addObject( new Plane( "Plane", Vec3f( 0.f, -2.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
 
 		// Add materials.
@@ -120,14 +122,17 @@ namespace RT_ISICG
 		_addMaterial( new MatteMaterial( " GreyMatte ", GREY, 0.6f ) );
 		_addMaterial( new MatteMaterial( " MagentaMatte ", MAGENTA, 0.6f ) );
 
+		_addMaterial( new MirrorMaterial( " WhiteMirror " ) );
+		_addMaterial( new TransparentMaterial( " WhiteTransparent ", 1.3f ) );
+
 		// ================================================================
 		// Add objects.
 		// ================================================================
 		// Spheres .
 		_addObject( new Sphere( " Sphere1 ", Vec3f( -2.f, 0.f, 3.f ), 1.5f ) );
-		_attachMaterialToObject( " WhiteMatte ", " Sphere1 " );
+		_attachMaterialToObject( " WhiteMirror ", " Sphere1 " );
 		_addObject( new Sphere( " Sphere2 ", Vec3f( 2.f, 0.f, 3.f ), 1.5f ) );
-		_attachMaterialToObject( " WhiteMatte ", " Sphere2 " );
+		_attachMaterialToObject( " WhiteTransparent ", " Sphere2 " );
 		// Pseudo Cornell box made with infinite planes .
 		_addObject( new Plane( " PlaneGround ", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
 		_attachMaterialToObject( " GreyMatte ", " PlaneGround " );
@@ -143,9 +148,9 @@ namespace RT_ISICG
 		// ================================================================
 		// Add lights.
 		// ================================================================
-		//_addLight( new PointLight( Vec3f( 0.f, 5.f, 0.f ), WHITE, 100.f ) );
-		_addLight(
-			new QuadLight( Vec3f( 1.f, 5.f, -2.f ), Vec3f( -2.f, 0.f, 0.f ), Vec3f( 0.f, 1.f, 2.f ), WHITE, 40.f ) );
+		_addLight( new PointLight( Vec3f( 0.f, 5.f, 0.f ), WHITE, 100.f ) );
+		//_addLight(
+		//	new QuadLight( Vec3f( 1.f, 5.f, -2.f ), Vec3f( -2.f, 0.f, 0.f ), Vec3f( 0.f, 1.f, 2.f ), WHITE, 60.f ) );
 	}
 
 	Scene::Scene() { _addMaterial( new ColorMaterial( "default", WHITE ) ); }

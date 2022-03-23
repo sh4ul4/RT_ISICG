@@ -107,6 +107,9 @@
     <ClCompile Include="src\lights\GlobeLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\integrators\WhittedIntegrator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\defines.hpp">
@@ -215,6 +218,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\materials\RealisticMaterial.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\integrators\WhittedIntegrator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\materials\MirrorMaterial.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\materials\TransparentMaterial.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
