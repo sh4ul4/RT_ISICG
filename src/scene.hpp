@@ -23,6 +23,7 @@ namespace RT_ISICG
 		void tp3( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 		void tp4( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 		void tp5( Vec3f & cameraPosition, Vec3f & cameraLookAt );
+		void tp6( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 
 
 	  public:
@@ -34,6 +35,8 @@ namespace RT_ISICG
 
 		// Initialization from file.
 		void init( const std::string & p_path ) { throw std::exception( "Not implemented !" ); }
+
+		void loadFileTriangleMesh( const std::string & p_name, const std::string & p_path );
 
 		const LightList & getLights() const { return _lightList; }
 

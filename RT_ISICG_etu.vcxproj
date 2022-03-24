@@ -28,20 +28,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -99,12 +99,18 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\lib\assimp;$(SolutionDir)\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\lib\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc142-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d  "$(ProjectDir)lib\assimp\assimp-vc142-mt.dll" "$(OutDir)"
+xcopy /y /d  "$(ProjectDir)lib\zlib1.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -130,75 +136,89 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\lib\assimp;$(SolutionDir)\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\lib\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc142-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d  "$(ProjectDir)lib\assimp\assimp-vc142-mt.dll" "$(OutDir)"
+xcopy /y /d  "$(ProjectDir)lib\zlib1.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\aabb.cpp" />
+    <ClCompile Include="src\bvh.cpp" />
+    <ClCompile Include="src\cameras\perspective_camera.cpp" />
+    <ClCompile Include="src\geometry\PlaneGeometry.cpp" />
+    <ClCompile Include="src\geometry\sphere_geometry.cpp" />
+    <ClCompile Include="src\geometry\triangle_mesh_geometry.cpp" />
+    <ClCompile Include="src\integrators\DirectLightingIntegrator.cpp" />
+    <ClCompile Include="src\integrators\ray_cast_integrator.cpp" />
     <ClCompile Include="src\integrators\WhittedIntegrator.cpp" />
     <ClCompile Include="src\lights\GlobeLight.cpp" />
-    <ClCompile Include="src\lights\QuadLight.cpp" />
-    <ClCompile Include="src\integrators\DirectLightingIntegrator.cpp" />
     <ClCompile Include="src\lights\PointLight.cpp" />
-    <ClCompile Include="src\objects\Plane.cpp" />
-    <ClCompile Include="src\geometry\PlaneGeometry.cpp" />
-    <ClCompile Include="src\cameras\perspective_camera.cpp" />
-    <ClCompile Include="src\geometry\sphere_geometry.cpp" />
-    <ClCompile Include="src\integrators\ray_cast_integrator.cpp" />
+    <ClCompile Include="src\lights\QuadLight.cpp" />
+    <ClCompile Include="src\lights\TriLight.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\objects\Plane.cpp" />
     <ClCompile Include="src\objects\sphere.cpp" />
+    <ClCompile Include="src\objects\triangle_mesh.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\utils\console_progress_bar.cpp" />
-    <ClCompile Include="src\lights\TriLight.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\aabb.hpp" />
     <ClInclude Include="src\brdfs\CookTorrance.hpp" />
     <ClInclude Include="src\brdfs\OrenNayarBRDF.hpp" />
     <ClInclude Include="src\brdfs\PhongBRDF.hpp" />
+    <ClInclude Include="src\bvh.hpp" />
     <ClInclude Include="src\brdfs\lambert_brdf.hpp" />
-    <ClInclude Include="src\integrators\WhittedIntegrator.hpp" />
-    <ClInclude Include="src\materials\MatteMaterial.hpp" />
-    <ClInclude Include="src\materials\MirrorMaterial.hpp" />
-    <ClInclude Include="src\materials\PlasticMaterial.hpp" />
-    <ClInclude Include="src\lights\GlobeLight.hpp" />
-    <ClInclude Include="src\lights\QuadLight.hpp" />
-    <ClInclude Include="src\integrators\DirectLightingIntegrator.hpp" />
-    <ClInclude Include="src\lights\PointLight.hpp" />
-    <ClInclude Include="src\materials\lambert_material.hpp" />
-    <ClInclude Include="src\materials\RealisticMaterial.hpp" />
-    <ClInclude Include="src\materials\TransparentMaterial.hpp" />
-    <ClInclude Include="src\objects\Plane.hpp" />
-    <ClInclude Include="src\geometry\PlaneGeometry.hpp" />
     <ClInclude Include="src\cameras\base_camera.hpp" />
     <ClInclude Include="src\cameras\perspective_camera.hpp" />
     <ClInclude Include="src\geometry\base_geometry.hpp" />
+    <ClInclude Include="src\geometry\PlaneGeometry.hpp" />
     <ClInclude Include="src\geometry\sphere_geometry.hpp" />
+    <ClInclude Include="src\geometry\triangle_mesh_geometry.hpp" />
     <ClInclude Include="src\hit_record.hpp" />
     <ClInclude Include="src\integrators\base_integrator.hpp" />
+    <ClInclude Include="src\integrators\DirectLightingIntegrator.hpp" />
     <ClInclude Include="src\integrators\ray_cast_integrator.hpp" />
+    <ClInclude Include="src\integrators\WhittedIntegrator.hpp" />
     <ClInclude Include="src\lights\base_light.hpp" />
+    <ClInclude Include="src\lights\GlobeLight.hpp" />
     <ClInclude Include="src\lights\light_sample.hpp" />
+    <ClInclude Include="src\lights\PointLight.hpp" />
+    <ClInclude Include="src\lights\QuadLight.hpp" />
+    <ClInclude Include="src\lights\TriLight.hpp" />
     <ClInclude Include="src\materials\color_material.hpp" />
     <ClInclude Include="src\defines.hpp" />
     <ClInclude Include="src\io\stb_include.hpp" />
     <ClInclude Include="src\materials\base_material.hpp" />
+    <ClInclude Include="src\materials\lambert_material.hpp" />
+    <ClInclude Include="src\materials\MatteMaterial.hpp" />
+    <ClInclude Include="src\materials\MirrorMaterial.hpp" />
+    <ClInclude Include="src\materials\PlasticMaterial.hpp" />
+    <ClInclude Include="src\materials\RealisticMaterial.hpp" />
+    <ClInclude Include="src\materials\TransparentMaterial.hpp" />
     <ClInclude Include="src\objects\base_object.hpp" />
+    <ClInclude Include="src\objects\Plane.hpp" />
     <ClInclude Include="src\objects\sphere.hpp" />
+    <ClInclude Include="src\objects\triangle_mesh.hpp" />
     <ClInclude Include="src\ray.hpp" />
     <ClInclude Include="src\renderer.hpp" />
     <ClInclude Include="src\scene.hpp" />
     <ClInclude Include="src\texture.hpp" />
     <ClInclude Include="src\utils\chrono.hpp" />
     <ClInclude Include="src\utils\console_progress_bar.hpp" />
-    <ClInclude Include="src\lights\TriLight.hpp" />
+    <ClInclude Include="src\utils\random.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
