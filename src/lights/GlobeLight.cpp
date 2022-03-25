@@ -38,12 +38,14 @@ namespace RT_ISICG
 
 	LightSample GlobeLight::sample( const Vec3f & p_point ) const
 	{
+		if ( glm::distance( p_point, _position ) <= _radius )
+			return LightSample( glm::normalize( _position - p_point ), 0.f, _color * _power, 1.f );
 		// find random vector in 2D circle
 		float r		= _radius * sqrt( randomFloat() );
 		float theta = randomFloat() * 2.f * PIf;
 		Vec3f v( r * cos( theta ), r * sin( theta ), 0.f );
 
-		// rotate back to 3D depending on the normal vectoor of the circle (2D representation of the visible hemisphere)
+		// rotate back to 3D depending on the normal vector of the circle (2D representation of the visible hemisphere)
 		glm::quat q( glm::normalize( p_point - _position ), Vec3f( 0.f, 0.f, 1.f ) );
 		q		  = glm::normalize( q );
 		Mat4f rot = glm::toMat4( q );

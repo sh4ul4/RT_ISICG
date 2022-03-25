@@ -14,11 +14,9 @@ namespace RT_ISICG
 		if ( !_aabb.intersect( p_ray, p_tMin, p_tMax ) ) { return false; }
 #endif
 #ifdef BVH_CHECK
-		return _bvh.intersect(
-			p_ray,
-			p_tMin,
-			p_tMax,
-			p_hitRecord ); // if ( !_bvh.intersect( p_ray, p_tMin, p_tMax, p_hitRecord ) ){return false;}
+		const bool intersection = _bvh.intersect( p_ray, p_tMin, p_tMax, p_hitRecord );
+		if ( intersection ) p_hitRecord._object = this;
+		return intersection;
 #endif
 		float  tClosest = p_tMax;			 // Hit distance.
 		size_t hitTri	= _triangles.size(); // Hit triangle id.
@@ -56,8 +54,7 @@ namespace RT_ISICG
 		if ( !_aabb.intersect( p_ray, p_tMin, p_tMax ) ) { return false; }
 #endif
 #ifdef BVH_CHECK
-		return _bvh.intersectAny(
-			p_ray, p_tMin, p_tMax ); // if ( !_bvh.intersectAny( p_ray, p_tMin, p_tMax ) ) { return false; }
+		return _bvh.intersectAny( p_ray, p_tMin, p_tMax );
 #endif
 		for ( size_t i = 0; i < _triangles.size(); i++ )
 		{

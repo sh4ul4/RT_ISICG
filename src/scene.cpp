@@ -3,6 +3,7 @@
 #include "objects/sphere.hpp"
 #include "objects/Plane.hpp"
 #include "objects/triangle_mesh.hpp"
+#include "objects/SphereLightObject.hpp"
 #include "lights/PointLight.hpp"
 #include "lights/QuadLight.hpp"
 #include "lights/TriLight.hpp"
@@ -13,6 +14,7 @@
 #include "materials/RealisticMaterial.hpp"
 #include "materials/MirrorMaterial.hpp"
 #include "materials/TransparentMaterial.hpp"
+#include "materials/EmissiveMaterial.hpp"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -161,8 +163,10 @@ namespace RT_ISICG
 	void Scene::tp6( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
 		// Camera position & orientation
-		cameraPosition = Vec3f( 6.f, 2.f, 6.f );
-		cameraLookAt   = Vec3f( -1.f, 0.f, -1.f );
+		//cameraPosition = Vec3f( 0.f, 2.f, -8.f );
+		cameraPosition = Vec3f( -250.f, 500.f, 330.f );
+		//cameraLookAt   = Vec3f( 0.f, 0.f, 1.f );
+		cameraLookAt = Vec3f( 0.f, 1.f, 0.f );
 
 		// ================================================================
 		// Add materials .
@@ -174,14 +178,23 @@ namespace RT_ISICG
 		_addMaterial( new MatteMaterial( "MagentaMatte", MAGENTA, 0.6f ) );
 		_addMaterial( new MatteMaterial( "YellowMatte", YELLOW, 0.6f ) );
 		_addMaterial( new MatteMaterial( "CyanMatte", CYAN, 0.6f ) );
+
+		_addMaterial( new MirrorMaterial( "WhiteMirror" ) );
+		_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f ) );
+		_addMaterial( new RealisticMaterial( "realistic", GREY, GREY, 0.5f ) );
+		_addMaterial( new EmissiveMaterial( "emissive", GREY, GREY ) );
 		// ================================================================
 		// Add objects .
 		// ================================================================
 		// OBJ.
-		loadFileTriangleMesh( "UVsphere", DATA_PATH "uvsphere.obj" );
-		_attachMaterialToObject( "CyanMatte", "UVsphere_defaultobject" );
+		loadFileTriangleMesh( "conference", DATA_PATH "conference/conference.obj" );
+		_attachMaterialToObject( "CyanMatte", "conference" );
+		//_attachMaterialToObject( "CyanMatte", "UVsphere_defaultobject" );
+
+		//_addObject( new Sphere( "spherelight", Vec3f( 0.f, 2.f, 1.f ), 0.5f) );
+		//_attachMaterialToObject( "emissive", "spherelight" );
 		// Pseudo Cornell box made with infinite planes .
-		_addObject( new Plane( "PlaneGround", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
+		/*_addObject( new Plane( "PlaneGround", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
 		_attachMaterialToObject( "GreyMatte", "PlaneGround" );
 		_addObject( new Plane( "PlaneLeft", Vec3f( 5.f, 0.f, 0.f ), Vec3f( -1.f, 0.f, 0.f ) ) );
 		_attachMaterialToObject( "RedMatte", "PlaneLeft" );
@@ -192,11 +205,14 @@ namespace RT_ISICG
 		_addObject( new Plane( "PlaneFront", Vec3f( 0.f, 0.f, 10.f ), Vec3f( 0.f, 0.f, -1.f ) ) );
 		_attachMaterialToObject( "MagentaMatte", "PlaneFront" );
 		_addObject( new Plane( "PlaneRear", Vec3f( 0.f, 0.f, -10.f ), Vec3f( 0.f, 0.f, 1.f ) ) );
-		_attachMaterialToObject( "YellowMatte", "PlaneRear" );
+		_attachMaterialToObject( "YellowMatte", "PlaneRear" );*/
 		// ================================================================
 		// Add lights .
 		// ================================================================
-		_addLight( new PointLight( Vec3f( 0.f, 3.f, -5.f ), WHITE, 100.f ) );
+		//_addLight( new PointLight( Vec3f( 0.f, 3.f, -5.f ), WHITE, 100.f ) );
+		_addLight( new PointLight( Vec3f( -250.f, 500.f, 330.f ), WHITE, 1000.f ) );
+		//_addLight( new QuadLight( Vec3f( 900.f, 600.f, -300.f ),Vec3f( 100.f, 600.f, -300.f ),Vec3f( 900.f, 600.f, 0.f ),WHITE,60.f ) );
+		//_addLight( new GlobeLight( Vec3f( 0.f, 2.f, 1.f ), 0.6f, WHITE, 200.f ) );
 	}
 
 	Scene::Scene() { _addMaterial( new ColorMaterial( "default", WHITE ) ); }
@@ -301,7 +317,7 @@ namespace RT_ISICG
 				aiString mtlName;
 				mtl->Get( AI_MATKEY_NAME, mtlName );
 
-				//_addMaterial( new PlasticMaterial( std::string( mtlName.C_Str() ), kd, ks, s ) );
+				//_addMaterial( new PlasticMaterial( std::string( mtlName.C_Str() ), kd, ks ) );
 				//_attachMaterialToObject( mtlName.C_Str(), meshName );
 			}
 

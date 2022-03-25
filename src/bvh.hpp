@@ -33,7 +33,7 @@ namespace RT_ISICG
 		~BVH() { delete _root; }
 
 		// Build the BVH from a list of triangles (call _buildRec).
-		void build( std::vector<TriangleMeshGeometry> * p_triangles, BaseObject* p_object );
+		void build( std::vector<TriangleMeshGeometry> * p_triangles );
 
 		// Search for the nearest intersection with the ray (call _intersectRec).
 		bool intersect( const Ray & p_ray, const float p_tMin, const float p_tMax, HitRecord & p_hitRecord ) const;
@@ -60,7 +60,6 @@ namespace RT_ISICG
 	  private:
 		std::vector<TriangleMeshGeometry> * _triangles = nullptr;
 		BVHNode *							_root	   = nullptr;
-		BaseObject *						_object   = nullptr;
 
 		const unsigned int _minTrianglesPerLeaf = 8;
 		const unsigned int _maxDepth			= 32;

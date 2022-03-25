@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -168,6 +168,7 @@ xcopy /y /d  "$(ProjectDir)lib\zlib1.dll" "$(OutDir)"</Command>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\objects\Plane.cpp" />
     <ClCompile Include="src\objects\sphere.cpp" />
+    <ClCompile Include="src\objects\SphereLightObject.cpp" />
     <ClCompile Include="src\objects\triangle_mesh.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\scene.cpp" />
@@ -202,6 +203,7 @@ xcopy /y /d  "$(ProjectDir)lib\zlib1.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\defines.hpp" />
     <ClInclude Include="src\io\stb_include.hpp" />
     <ClInclude Include="src\materials\base_material.hpp" />
+    <ClInclude Include="src\materials\EmissiveMaterial.hpp" />
     <ClInclude Include="src\materials\lambert_material.hpp" />
     <ClInclude Include="src\materials\MatteMaterial.hpp" />
     <ClInclude Include="src\materials\MirrorMaterial.hpp" />
@@ -211,6 +213,7 @@ xcopy /y /d  "$(ProjectDir)lib\zlib1.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\objects\base_object.hpp" />
     <ClInclude Include="src\objects\Plane.hpp" />
     <ClInclude Include="src\objects\sphere.hpp" />
+    <ClInclude Include="src\objects\SphereLightObject.hpp" />
     <ClInclude Include="src\objects\triangle_mesh.hpp" />
     <ClInclude Include="src\ray.hpp" />
     <ClInclude Include="src\renderer.hpp" />
