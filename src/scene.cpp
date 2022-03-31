@@ -21,6 +21,7 @@
 
 #define _CURRENT_TP 6
 #define DATA_PATH "obj/"
+#define BIND_MTL 1
 
 namespace RT_ISICG
 {
@@ -116,7 +117,7 @@ namespace RT_ISICG
 	void Scene::tp5( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
 		// Camera position & orientation
-		cameraPosition = Vec3f( 0.f, 2.f, -6.f );
+		cameraPosition = Vec3f( 0.f, 2.f, -7.f );
 		cameraLookAt   = Vec3f( 0.f, 0.f, 1.f );
 
 		// ================================================================
@@ -163,10 +164,10 @@ namespace RT_ISICG
 	void Scene::tp6( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
 		// Camera position & orientation
-		//cameraPosition = Vec3f( 0.f, 2.f, -8.f );
+		//cameraPosition = Vec3f( 0.f, 8.f, -8.f );
 		cameraPosition = Vec3f( -250.f, 500.f, 330.f );
-		//cameraLookAt   = Vec3f( 0.f, 0.f, 1.f );
-		cameraLookAt = Vec3f( 0.f, 1.f, 0.f );
+		//cameraLookAt   = Vec3f( 0.f, -0.5f, 1.f );
+		cameraLookAt = Vec3f( 0.f, 350.f, 100.f );
 
 		// ================================================================
 		// Add materials .
@@ -179,23 +180,27 @@ namespace RT_ISICG
 		_addMaterial( new MatteMaterial( "YellowMatte", YELLOW, 0.6f ) );
 		_addMaterial( new MatteMaterial( "CyanMatte", CYAN, 0.6f ) );
 
+		_addMaterial( new PlasticMaterial( "plastic", WHITE, WHITE ) );
 		_addMaterial( new MirrorMaterial( "WhiteMirror" ) );
-		_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f ) );
-		_addMaterial( new RealisticMaterial( "realistic", GREY, GREY, 0.5f ) );
-		_addMaterial( new EmissiveMaterial( "emissive", GREY, GREY ) );
+		//_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f ) );
+		//_addMaterial( new RealisticMaterial( "realistic", GREY, GREY, 0.5f ) );
+		//_addMaterial( new EmissiveMaterial( "emissive", GREY, GREY ) );
 		// ================================================================
 		// Add objects .
 		// ================================================================
 		// OBJ.
 		loadFileTriangleMesh( "conference", DATA_PATH "conference/conference.obj" );
-		_attachMaterialToObject( "CyanMatte", "conference" );
-		//_attachMaterialToObject( "CyanMatte", "UVsphere_defaultobject" );
+		//_attachMaterialToObject( "plastic", "bunny" );
+		//loadFileTriangleMesh( "bunny", DATA_PATH "bunny.obj" );
+		//_attachMaterialToObject( "plastic", "bunny" );
+		//loadFileTriangleMesh( "conference", DATA_PATH "conference/conference.obj" );
+		//_attachMaterialToObject( "CyanMatte", "conference" );
 
 		//_addObject( new Sphere( "spherelight", Vec3f( 0.f, 2.f, 1.f ), 0.5f) );
 		//_attachMaterialToObject( "emissive", "spherelight" );
 		// Pseudo Cornell box made with infinite planes .
 		/*_addObject( new Plane( "PlaneGround", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
-		_attachMaterialToObject( "GreyMatte", "PlaneGround" );
+		_attachMaterialToObject( "WhiteMirror", "PlaneGround" );
 		_addObject( new Plane( "PlaneLeft", Vec3f( 5.f, 0.f, 0.f ), Vec3f( -1.f, 0.f, 0.f ) ) );
 		_attachMaterialToObject( "RedMatte", "PlaneLeft" );
 		_addObject( new Plane( "PlaneCeiling", Vec3f( 0.f, 7.f, 0.f ), Vec3f( 0.f, -1.f, 0.f ) ) );
@@ -209,9 +214,9 @@ namespace RT_ISICG
 		// ================================================================
 		// Add lights .
 		// ================================================================
-		//_addLight( new PointLight( Vec3f( 0.f, 3.f, -5.f ), WHITE, 100.f ) );
-		_addLight( new PointLight( Vec3f( -250.f, 500.f, 330.f ), WHITE, 1000.f ) );
-		//_addLight( new QuadLight( Vec3f( 900.f, 600.f, -300.f ),Vec3f( 100.f, 600.f, -300.f ),Vec3f( 900.f, 600.f, 0.f ),WHITE,60.f ) );
+		//_addLight( new PointLight( Vec3f( 0.f, 8.f, -8.f ), WHITE, 100.f ) );
+		//_addLight( new PointLight( Vec3f( 0.f, 350.f, 100.f ), WHITE, 600000.f ) );
+		_addLight( new QuadLight( Vec3f( 900.f, 600.f, -300.f ),Vec3f( -800.f, 0.f, 0.f ),Vec3f( 0.f, 0.f, 300.f ), WHITE, 20.f ) );
 		//_addLight( new GlobeLight( Vec3f( 0.f, 2.f, 1.f ), 0.6f, WHITE, 200.f ) );
 	}
 
@@ -317,8 +322,10 @@ namespace RT_ISICG
 				aiString mtlName;
 				mtl->Get( AI_MATKEY_NAME, mtlName );
 
-				//_addMaterial( new PlasticMaterial( std::string( mtlName.C_Str() ), kd, ks ) );
-				//_attachMaterialToObject( mtlName.C_Str(), meshName );
+#ifdef BIND_MTL
+				_addMaterial( new PlasticMaterial( std::string( mtlName.C_Str() ), kd, ks ) );
+				_attachMaterialToObject( mtlName.C_Str(), meshName );
+#endif
 			}
 
 			std::cout << "-- [DONE] " << triMesh->getNbTriangles() << " triangles, " << triMesh->getNbVertices()

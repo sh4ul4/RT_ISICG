@@ -42,11 +42,18 @@ namespace RT_ISICG
 			// transparent material
 			else if ( hitRecord._object->getMaterial()->isTransparent() && depth <= _nbBounces )
 			{
-				const float fresnel = fresnelEquation(
-					p_ray.getDirection(), hitRecord._normal, hitRecord._object->getMaterial()->getIOR() );
+				//Vec3f		normal	= inside ? -hitRecord._normal : hitRecord._normal;
+				const float fresnel = fresnelEquation( glm::normalize( p_ray.getDirection() ),
+													   hitRecord._normal,
+												 refractIdx,
+												 hitRecord._object->getMaterial()->getIOR() );
+				//float eta_	  = !inside ? refractIdx : 1.f / refractIdx;
+				float eta	  = inside ? hitRecord._object->getMaterial()->getIOR()
+									   : 1.f / hitRecord._object->getMaterial()->getIOR();
+				
 				// reflect
 				res += fresnel
-					   * LiRec( depth + 1,
+					   * LiRec( depth + 1.f,
 								inside,
 								refractIdx,
 								p_scene,
@@ -55,15 +62,15 @@ namespace RT_ISICG
 								p_tMax,
 								p_nbLightSamples );
 				// transmit
+				
 				res += ( 1.f - fresnel )
-					   * LiRec( depth + 1,
+					   * LiRec( depth + 1.f,
 								!inside,
-								hitRecord._object->getMaterial()->getIOR(),
+								eta,
 								p_scene,
 								Ray( hitRecord._point,
 									 glm::refract( p_ray.getDirection(),
-												   hitRecord._normal,
-												   refractIdx / hitRecord._object->getMaterial()->getIOR() ) ),
+												   hitRecord._normal, eta ) ),
 								p_tMin + 0.01f,
 								p_tMax,
 								p_nbLightSamples );

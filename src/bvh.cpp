@@ -3,6 +3,8 @@
 #include "utils/chrono.hpp"
 #include <algorithm>
 
+#define SAH
+
 namespace RT_ISICG
 {
 	void BVH::build( std::vector<TriangleMeshGeometry> * p_triangles )
@@ -38,7 +40,125 @@ namespace RT_ISICG
 		if ( _root != nullptr ) return _intersectAnyRec( _root, p_ray, p_tMin, p_tMax );
 		return false;
 	}
+#ifdef SAH
+	float predictSahCost(const float traversalCost, const float intersectCost, const int nbTriA, const int nbTriB, const float surfaceA, const float surfaceB) {
+		Vec2f pAB( /*glm::normalize*/( Vec2f( surfaceA, surfaceB ) ) );
+		return traversalCost + pAB.x * nbTriA * intersectCost + pAB.y * nbTriB * intersectCost;
+	}
 
+	inline float cuboidSurface( const float w, const float h, const float l )
+	{
+		return 2.f * ( l * w + w * h + l * h );
+	}
+
+	void BVH::_buildRec( BVHNode *			p_node,
+						 const unsigned int p_firstTriangleId,
+						 const unsigned int p_lastTriangleId,
+						 const unsigned int p_depth )
+	{
+		p_node->_firstTriangleId = p_firstTriangleId;
+		p_node->_lastTriangleId	 = p_lastTriangleId;
+		// make AABB
+		for ( unsigned int i = p_firstTriangleId; i < p_lastTriangleId; i++ )
+		{
+			Vec3f a, b, c;
+			( *_triangles )[ i ].getVertices( a, b, c );
+			p_node->_aabb.extend( a );
+			p_node->_aabb.extend( b );
+			p_node->_aabb.extend( c );
+		}
+		// early exit conditions
+		if ( p_lastTriangleId - p_firstTriangleId < _minTrianglesPerLeaf ) return;
+		if ( p_depth > _maxDepth ) return;
+		// partition triangles between p_firstTriangleId and p_lastTriangleId
+		std::vector<TriangleMeshGeometry>::iterator partIterator = _triangles->begin() + p_firstTriangleId;
+		const size_t axis		  = p_node->_aabb.largestAxis();
+		if ( axis > 50 )
+		{
+			const float									binnings	 = 100;
+			const float									minSahCost	 = INFINITY;
+			for ( float i = 0; i < binnings; i++ )
+			{
+				const float factor	= i / binnings;
+				const float axisMid = p_node->_aabb.getMin()[ axis ]
+									  + factor * ( p_node->_aabb.getMax()[ axis ] - p_node->_aabb.getMin()[ axis ] );
+				const float surface = cuboidSurface( p_node->_aabb.getMax()[ 0 ] - p_node->_aabb.getMin()[ 0 ],
+													 p_node->_aabb.getMax()[ 1 ] - p_node->_aabb.getMin()[ 1 ],
+													 p_node->_aabb.getMax()[ 2 ] - p_node->_aabb.getMin()[ 2 ] );
+				const float surfaceA
+					= cuboidSurface(
+						  axisMid - p_node->_aabb.getMin()[ axis ],
+						  p_node->_aabb.getMax()[ ( axis + 1 ) % 3 ] - p_node->_aabb.getMin()[ ( axis + 1 ) % 3 ],
+						  p_node->_aabb.getMax()[ ( axis + 2 ) % 3 ] - p_node->_aabb.getMin()[ ( axis + 2 ) % 3 ] )
+					  / surface;
+				const float surfaceB
+					= cuboidSurface(
+						  p_node->_aabb.getMax()[ axis ] - axisMid,
+						  p_node->_aabb.getMax()[ ( axis + 1 ) % 3 ] - p_node->_aabb.getMin()[ ( axis + 1 ) % 3 ],
+						  p_node->_aabb.getMax()[ ( axis + 2 ) % 3 ] - p_node->_aabb.getMin()[ ( axis + 2 ) % 3 ] )
+					  / surface;
+				const auto currentPartIterator
+					= std::partition( _triangles->begin() + p_firstTriangleId,
+									  _triangles->begin() + p_lastTriangleId,
+									  [ = ]( const TriangleMeshGeometry & tmg )
+									  {
+										  Vec3f a, b, c;
+										  tmg.getVertices( a, b, c );
+										  switch ( axis )
+										  {
+										  case 0: return ( a.x < axisMid && b.x < axisMid && c.x < axisMid ); break;
+										  case 1: return ( a.y < axisMid && b.y < axisMid && c.y < axisMid ); break;
+										  case 2: return ( a.z < axisMid && b.z < axisMid && c.z < axisMid ); break;
+										  default: break;
+										  }
+									  } );
+				const int	nbTriA		   = currentPartIterator - _triangles->begin() + p_firstTriangleId;
+				const int	nbTriB		   = _triangles->begin() + p_lastTriangleId - currentPartIterator;
+				const float currentSahCost = predictSahCost( 1.f, 2.f, nbTriA, nbTriB, surfaceA, surfaceB );
+				if ( currentSahCost < 0 )
+				{
+					std::cout << factor << std::endl;
+					std::cout << axisMid << std::endl;
+					std::cout << surfaceA << std::endl;
+					std::cout << surfaceB << std::endl;
+					std::cout << nbTriA << std::endl;
+					std::cout << nbTriB << std::endl << std::endl;
+				}
+				if ( currentSahCost > minSahCost || partIterator == _triangles->begin() + p_firstTriangleId )
+				{
+					partIterator = currentPartIterator;
+				}
+			}
+		}
+		else
+		{
+			const float axisMid = ( p_node->_aabb.getMin()[ axis ] + p_node->_aabb.getMax()[ axis ] ) / 2.f;
+			partIterator
+				= std::partition( _triangles->begin() + p_firstTriangleId,
+								  _triangles->begin() + p_lastTriangleId,
+								  [ = ]( const TriangleMeshGeometry & tmg )
+								  {
+									  Vec3f a, b, c;
+									  tmg.getVertices( a, b, c );
+									  switch ( axis )
+									  {
+									  case 0: return ( a.x < axisMid && b.x < axisMid && c.x < axisMid ); break;
+									  case 1: return ( a.y < axisMid && b.y < axisMid && c.y < axisMid ); break;
+									  case 2: return ( a.z < axisMid && b.z < axisMid && c.z < axisMid ); break;
+									  default: break;
+									  }
+								  } );
+		}
+
+		const unsigned int partId = (unsigned int)( partIterator - _triangles->begin() );
+		// recursive calls
+		p_node->_left  = new BVHNode();
+		p_node->_right = new BVHNode();
+		_buildRec( p_node->_left, p_firstTriangleId, partId, p_depth + 1 );
+		_buildRec( p_node->_right, partId, p_lastTriangleId, p_depth + 1 );
+	}
+
+#else
 	void BVH::_buildRec( BVHNode *			p_node,
 						 const unsigned int p_firstTriangleId,
 						 const unsigned int p_lastTriangleId,
@@ -89,6 +209,7 @@ namespace RT_ISICG
 		_buildRec( p_node->_left, p_firstTriangleId, partId, p_depth + 1 );
 		_buildRec( p_node->_right, partId, p_lastTriangleId, p_depth + 1 );
 	}
+#endif
 
 	bool BVH::_intersectRec( const BVHNode * p_node,
 							 const Ray &	 p_ray,

@@ -78,7 +78,7 @@ namespace RT_ISICG
 					p_texture.setPixel( i, j, ( ray.getDirection() + 1.f ) * 0.5f );
 #endif
 #ifdef TP1_EX3
-					Vec3f tmpcolor = _integrator->Li( p_scene, ray, 0, 1000, _nbLightSamples );
+					Vec3f tmpcolor = _integrator->Li( p_scene, ray, 0, 10000, _nbLightSamples );
 					color += tmpcolor;
 				}
 				color /= _nbPixelSamples;

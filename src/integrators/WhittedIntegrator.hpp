@@ -37,7 +37,7 @@ namespace RT_ISICG
 		size_t _nbBounces = 5;
 
 	  private:
-		float fresnelEquation( const Vec3f & I, const Vec3f & N, const float & ior ) const
+		float fresnelEquation_( const Vec3f & I, const Vec3f & N, const float & ior ) const
 		{
 			const float tmp	 = glm::dot( glm::normalize( I ), glm::normalize( N ) );
 			float		cosi = tmp < -1.f ? -1.f : tmp > 1.f ? 1.f : tmp; // clamp
@@ -55,6 +55,31 @@ namespace RT_ISICG
 				float Rp   = ( ( etai * cosi ) - ( etat * cost ) ) / ( ( etai * cosi ) + ( etat * cost ) );
 				return ( Rs * Rs + Rp * Rp ) / 2.f;
 			}
+		}
+		float fresnelEquation( const Vec3f & incident,
+							   const Vec3f & normal,
+							   const float		 n1,
+							   const float		 n2
+							   /*,float	 f0	 = 0.f,
+							   float		 f90 = 1.f*/ ) const
+		{
+			// Schlick aproximation
+			float r0 = ( n1 - n2 ) / ( n1 + n2 );
+			r0 *= r0;
+			float cosX = -dot( normal, incident );
+			if ( n1 > n2 )
+			{
+				float n		= n1 / n2;
+				float sinT2 = n * n * ( 1.0 - cosX * cosX );
+				// Total internal reflection
+				if ( sinT2 > 1.0 ) return 1.f; // f90;
+				cosX = sqrt( 1.0 - sinT2 );
+			}
+			float x	  = 1.0 - cosX;
+			float ret = r0 + ( 1.0 - r0 ) * x * x * x * x * x;
+
+			// adjust reflect multiplier for object reflectivity
+			return ret; // mix( f0, f90, ret );
 		}
 		Vec3f refract( const Vec3f & I, const Vec3f & N, const float & ior ) const
 		{
