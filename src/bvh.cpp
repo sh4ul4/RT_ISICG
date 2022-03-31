@@ -73,10 +73,10 @@ namespace RT_ISICG
 		// partition triangles between p_firstTriangleId and p_lastTriangleId
 		std::vector<TriangleMeshGeometry>::iterator partIterator = _triangles->begin() + p_firstTriangleId;
 		const size_t axis		  = p_node->_aabb.largestAxis();
-		if ( axis > 50 )
+		if ( axis > 10 )
 		{
-			const float									binnings	 = 100;
-			const float									minSahCost	 = INFINITY;
+			const float									binnings	 = 200;
+			const float									minSahCost	 = -INFINITY;
 			for ( float i = 0; i < binnings; i++ )
 			{
 				const float factor	= i / binnings;
