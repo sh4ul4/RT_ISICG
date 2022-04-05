@@ -19,7 +19,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
-#define _CURRENT_TP 6
+#define _CURRENT_TP 6//0xDEADBEEF
 #define DATA_PATH "obj/"
 #define BIND_MTL 1
 
@@ -117,8 +117,8 @@ namespace RT_ISICG
 	void Scene::tp5( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
 		// Camera position & orientation
-		cameraPosition = Vec3f( 0.f, 2.f, -7.f );
-		cameraLookAt   = Vec3f( 0.f, 0.f, 1.f );
+		cameraPosition = Vec3f( 0.f, 2.f, -6.f );
+		cameraLookAt   = Vec3f( 0.f, 2.f, 0.f );
 
 		// ================================================================
 		// Add materials.
@@ -214,10 +214,82 @@ namespace RT_ISICG
 		// ================================================================
 		// Add lights .
 		// ================================================================
-		//_addLight( new PointLight( Vec3f( 0.f, 8.f, -8.f ), WHITE, 100.f ) );
+		_addLight( new PointLight( Vec3f( -250.f, 500.f, 330.f ), WHITE, 100.f ) );
 		//_addLight( new PointLight( Vec3f( 0.f, 350.f, 100.f ), WHITE, 600000.f ) );
-		_addLight( new QuadLight( Vec3f( 900.f, 600.f, -300.f ),Vec3f( -800.f, 0.f, 0.f ),Vec3f( 0.f, 0.f, 300.f ), WHITE, 20.f ) );
-		//_addLight( new GlobeLight( Vec3f( 0.f, 2.f, 1.f ), 0.6f, WHITE, 200.f ) );
+		//_addLight( new QuadLight( Vec3f( 900.f, 600.f, -300.f ),Vec3f( -800.f, 0.f, 0.f ),Vec3f( 0.f, 0.f, 300.f ), WHITE, 20.f ) );
+		//_addLight( new GlobeLight( Vec3f( -250.f, 500.f, 330.f ), 0.6f, WHITE, 10000.f ) );
+	}
+
+	void Scene::tp0( Vec3f & cameraPosition, Vec3f & cameraLookAt )
+	{
+		// Camera position & orientation
+		cameraPosition = Vec3f( 0.f, 4.f, -6.f );
+		cameraLookAt   = Vec3f( 0.f, 4.f, 1.f );
+
+		// ================================================================
+		// Add materials.
+		// ================================================================
+		_addMaterial( new PlasticMaterial( "WhitePlastic", WHITE, WHITE ) );
+		_addMaterial( new PlasticMaterial( "RedPlastic", RED, RED ) );
+		_addMaterial( new PlasticMaterial( "GreenPlastic", GREEN, GREEN ) );
+		_addMaterial( new PlasticMaterial( "BluePlastic", BLUE, BLUE ) );
+		_addMaterial( new PlasticMaterial( "GreyPlastic", GREY, GREY ) );
+		_addMaterial( new PlasticMaterial( "MagentaPlastic", MAGENTA, MAGENTA ) );
+		_addMaterial( new MirrorMaterial( "WhiteMirror" ) );
+		_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f ) );
+		_addMaterial( new EmissiveMaterial( "red", RED, RED ) );
+
+		// ================================================================
+		// Add objects.
+		// ================================================================
+		// Spheres .
+		_addObject( new Sphere( "bauch", Vec3f( 0.f, 0.5f, 8.f ), 3.f ) );
+		_attachMaterialToObject( "BluePlastic", "bauch" );
+		_addObject( new Sphere( "kopf", Vec3f( 0.f, 5.f, 8.f ), 1.5f ) );
+		_attachMaterialToObject( "WhiteMirror", "kopf" );
+		_addObject( new Sphere( "arm1", Vec3f( 3.f, 2.f, 8.f ), 0.75f ) );
+		_attachMaterialToObject( "WhiteTransparent", "arm1" );
+		_addObject( new Sphere( "arm2", Vec3f( -3.f, 2.f, 8.f ), 0.75f ) );
+		_attachMaterialToObject( "WhiteTransparent", "arm2" );
+		_addObject( new Sphere( "bein1", Vec3f( 2.f, -2.f, 8.f ), 0.75f ) );
+		_attachMaterialToObject( "MagentaPlastic", "bein1" );
+		_addObject( new Sphere( "bein2", Vec3f( -2.f, -2.f, 8.f ), 0.75f ) );
+		_attachMaterialToObject( "MagentaPlastic", "bein2" );
+		_addObject( new Sphere( "nase", Vec3f( 0.f, 5.f, 6.25f ), 0.25f ) );
+		_attachMaterialToObject( "MagentaPlastic", "nase" );
+		_addObject( new Sphere( "auge1", Vec3f( 0.75f, 5.25f, 6.75f ), 0.25f ) );
+		_attachMaterialToObject( "RedPlastic", "auge1" );
+		_addObject( new Sphere( "auge2", Vec3f( -0.75f, 5.25f, 6.75f ), 0.25f ) );
+		_attachMaterialToObject( "RedPlastic", "auge2" );
+		_addObject( new Sphere( "ohr1", Vec3f( -1.f, 6.f, 8.f ), 0.75f ) );
+		_attachMaterialToObject( "MagentaPlastic", "ohr1" );
+		_addObject( new Sphere( "ohr2", Vec3f( 1.f, 6.f, 8.f ), 0.75f ) );
+		_attachMaterialToObject( "MagentaPlastic", "ohr2" );
+
+		//_addObject( new Sphere( "Lense1", Vec3f( -2.89f, 6.99f, 0.021f ), 0.00004f ) );
+		//_attachMaterialToObject( "WhitePlastic", "Lense1" );
+		// 
+		// Pseudo Cornell box made with infinite planes .
+		_addObject( new Plane( "PlaneGround", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
+		_attachMaterialToObject( "GreenPlastic", "PlaneGround" );
+		_addObject( new Plane( "PlaneLeft", Vec3f( 5.f, 0.f, 0.f ), Vec3f( -1.f, 0.f, 0.f ) ) );
+		_attachMaterialToObject( "RedPlastic", "PlaneLeft" );
+		_addObject( new Plane( "PlaneCeiling", Vec3f( 0.f, 8.f, 0.f ), Vec3f( 0.f, -1.f, 0.f ) ) );
+		_attachMaterialToObject( "GreenPlastic", "PlaneCeiling" );
+		_addObject( new Plane( "PlaneRight", Vec3f( -5.f, 0.f, 0.f ), Vec3f( 1.f, 0.f, 0.f ) ) );
+		_attachMaterialToObject( "RedPlastic", "PlaneRight" );
+		_addObject( new Plane( "PlaneFront", Vec3f( 0.f, 0.f, 10.f ), Vec3f( 0.f, 0.f, -1.f ) ) );
+		_attachMaterialToObject( "GreenPlastic", "PlaneFront" );
+
+		// ================================================================
+		// Add lights.
+		// ================================================================
+		//_addLight( new PointLight( Vec3f( -2.9f, 7.f, 0.f ), WHITE, 100.f ) );
+		//_addLight( new PointLight( Vec3f( 2.9f, -2.9f, 0.f ), WHITE, 100.f ) );
+		_addLight( new GlobeLight( Vec3f( -2.9f, 7.f, 0.f ), 0.6f, WHITE, 40.f ) );
+		_addLight( new GlobeLight( Vec3f( 3.f, -2.f, 0.f ), 0.6f, WHITE, 40.f ) );
+		//_addLight(
+		//	new QuadLight( Vec3f( 1.f, 5.f, -2.f ), Vec3f( -2.f, 0.f, 0.f ), Vec3f( 0.f, 1.f, 2.f ), WHITE, 60.f ) );
 	}
 
 	Scene::Scene() { _addMaterial( new ColorMaterial( "default", WHITE ) ); }
@@ -240,7 +312,9 @@ namespace RT_ISICG
 
 	void Scene::init( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
-#if _CURRENT_TP == 1
+#if _CURRENT_TP == 0xDEADBEEF
+		tp0( cameraPosition, cameraLookAt );
+#elif _CURRENT_TP == 1
 		tp1( cameraPosition, cameraLookAt );
 #elif _CURRENT_TP == 2
 		tp2( cameraPosition, cameraLookAt );

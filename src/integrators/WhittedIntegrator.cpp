@@ -14,6 +14,8 @@ namespace RT_ISICG
 		return LiRec( 0, false, 1.f, p_scene, p_ray, p_tMin, p_tMax, p_nbLightSamples );
 	}
 
+	Vec3f reflect( const Vec3f & I, const Vec3f & N ) { return I - 2.f * glm::dot( I, N ) * N; }
+
 	Vec3f WhittedIntegrator::LiRec( const float	  depth,
 		const bool inside,
 									const float	  refractIdx,
@@ -42,38 +44,52 @@ namespace RT_ISICG
 			// transparent material
 			else if ( hitRecord._object->getMaterial()->isTransparent() && depth <= _nbBounces )
 			{
-				//Vec3f		normal	= inside ? -hitRecord._normal : hitRecord._normal;
-				const float fresnel = fresnelEquation( glm::normalize( p_ray.getDirection() ),
-													   hitRecord._normal,
-												 refractIdx,
-												 hitRecord._object->getMaterial()->getIOR() );
-				//float eta_	  = !inside ? refractIdx : 1.f / refractIdx;
-				float eta	  = inside ? hitRecord._object->getMaterial()->getIOR()
-									   : 1.f / hitRecord._object->getMaterial()->getIOR();
-				
-				// reflect
-				res += fresnel
-					   * LiRec( depth + 1.f,
-								inside,
-								refractIdx,
-								p_scene,
-								Ray( hitRecord._point, glm::reflect( p_ray.getDirection(), hitRecord._normal ) ),
-								p_tMin + 0.01f,
-								p_tMax,
-								p_nbLightSamples );
-				// transmit
-				
-				res += ( 1.f - fresnel )
-					   * LiRec( depth + 1.f,
-								!inside,
-								eta,
-								p_scene,
-								Ray( hitRecord._point,
-									 glm::refract( p_ray.getDirection(),
-												   hitRecord._normal, eta ) ),
-								p_tMin + 0.01f,
-								p_tMax,
-								p_nbLightSamples );
+				const Vec3f reflectDir( glm::normalize( glm::reflect( p_ray.getDirection(), hitRecord._normal ) ) );
+
+				const float ni	= inside ? hitRecord._object->getMaterial()->getIOR() : refractIdx;
+				const float no	= inside ? refractIdx : hitRecord._object->getMaterial()->getIOR();
+				const float eta = ni / no;
+
+				const float cosThetaIn = glm::dot( hitRecord._normal, -p_ray.getDirection() );
+				if ( ( glm::asin( 1.f / eta ) < glm::acos( cosThetaIn ) ) && ( ni > no ) )
+				{
+					res += LiRec( depth + 1.f,
+								  inside,
+								  refractIdx,
+								  p_scene,
+								  Ray( hitRecord._point, reflectDir ),
+								  p_tMin + 0.01f,
+								  p_tMax,
+								  p_nbLightSamples );
+				}
+				else
+				{
+					const Vec3f refractDir(
+						glm::normalize( glm::refract( p_ray.getDirection(), hitRecord._normal, eta ) ) );
+					const Ray refractRay
+						= Ray( hitRecord._point,
+							   glm::normalize( glm::refract( p_ray.getDirection(), hitRecord._normal, eta ) ) );
+					const float R = fresnelEquation( refractDir, hitRecord._normal, ni, no, cosThetaIn );
+					res += R
+							   * LiRec( depth + 1.f,
+										inside,
+										refractIdx,
+										p_scene,
+										Ray( hitRecord._point, reflectDir ),
+										p_tMin + 0.01f,
+										p_tMax,
+										p_nbLightSamples )
+						   + ( 1.f - R )
+								 * LiRec( depth + 1.f,
+										  !inside,
+										  refractIdx,
+										  p_scene,
+										  Ray( hitRecord._point, refractDir ),
+										  p_tMin + 0.01f,
+										  p_tMax,
+										  p_nbLightSamples );
+					;
+				}
 			}
 			else
 			{

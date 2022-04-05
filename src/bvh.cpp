@@ -3,7 +3,7 @@
 #include "utils/chrono.hpp"
 #include <algorithm>
 
-#define SAH
+//#define SAH
 
 namespace RT_ISICG
 {

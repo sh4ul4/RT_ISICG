@@ -18,6 +18,7 @@ namespace RT_ISICG
 
 	class Scene
 	{
+		void tp0( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 		void tp1( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 		void tp2( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 		void tp3( Vec3f & cameraPosition, Vec3f & cameraLookAt );
