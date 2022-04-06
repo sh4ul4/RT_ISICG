@@ -51,6 +51,12 @@ namespace RT_ISICG
 		void _addObject( BaseObject * p_object );
 		void _addMaterial( BaseMaterial * p_material );
 		void _addLight( BaseLight * p_light );
+		void _addGlobeLightObject( const std::string & p_name,
+								   const Vec3f &	   p_position,
+								   const float		   p_radius,
+								   const Vec3f &	   p_objectColor,
+								   const Vec3f &	   p_lightColor,
+								   const float		   p_power );
 
 		void _attachMaterialToObject( const std::string & p_materialName, const std::string & p_objectName );
 

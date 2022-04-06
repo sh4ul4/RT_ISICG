@@ -27,6 +27,8 @@ namespace RT_ISICG
 								const float p_tMin,
 								const float p_tMax ) const override;
 
+		virtual float getMaxDepth() const override { return _geometry.getRadius() * 2.f; }
+
 	  private:
 		SphereGeometry _geometry;
 	};

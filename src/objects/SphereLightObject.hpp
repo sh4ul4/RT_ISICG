@@ -16,11 +16,14 @@ namespace RT_ISICG
 						   const Vec3f &	   p_center,
 						   const float		   p_radius,
 						   const Vec3f &	   p_color,
-						   const float		   p_power )
-			: BaseObject( p_name ), _geometry( p_center, p_radius ), _color( p_color ), _power( p_power )
+						   const float		   p_power,
+						   BaseLight *		   p_light )
+			: BaseObject( p_name ), _geometry( p_center, p_radius ), _color( p_color ), _power( p_power ),
+			  _light( p_light )
 		{
-
 		}
+
+		virtual BaseLight * getLight() const override { return _light; }
 
 		// Check for nearest intersection between p_tMin and p_tMax : if found fill p_hitRecord.
 		virtual bool intersect( const Ray & p_ray,
@@ -30,15 +33,11 @@ namespace RT_ISICG
 
 		virtual bool intersectAny( const Ray & p_ray, const float p_tMin, const float p_tMax ) const override;
 
-		BaseLight * generateLight() const
-		{
-			return new GlobeLight( _geometry.getCenter(), _geometry.getRadius(), _color, _power );
-		}
-
 	  private:
 		SphereGeometry _geometry;
 		Vec3f		   _color;
 		float		   _power;
+		BaseLight *	   _light;
 	};
 
 } // namespace RT_ISICG

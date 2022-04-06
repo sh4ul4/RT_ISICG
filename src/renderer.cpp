@@ -59,7 +59,7 @@ namespace RT_ISICG
 			for ( int i = 0; i < width; i++ )
 			{
 #ifdef TP1_EX3
-				Vec3f color( 0 );
+				Vec3f color( 0.f );
 				for ( int raycntr = 0; raycntr < _nbPixelSamples; raycntr++ )
 				{
 					int			aleax = rand() % _nbPixelSamples;
@@ -71,18 +71,18 @@ namespace RT_ISICG
 				const Ray ray = p_camera->generateRay( ( i + 0.5f ) / ( width - 1 ), ( j + 0.5f ) / ( height - 1 ) );
 #endif
 #ifdef TP1_EX2
-					Vec3f color = _integrator->Li( p_scene, ray, 0, 1000, _nbLightSamples );
-					p_texture.setPixel( i, j, glm::clamp(color,Vec3f(0,0,0),Vec3f(1,1,1) ));
+					Vec3f color = _integrator->Li( p_scene, ray, 0.f, 10000.f, _nbLightSamples );
+					p_texture.setPixel( i, j, glm::clamp(color,Vec3f(0.f),Vec3f(1.f) ));
 #endif
 #ifdef TP1_EX1
 					p_texture.setPixel( i, j, ( ray.getDirection() + 1.f ) * 0.5f );
 #endif
 #ifdef TP1_EX3
-					Vec3f tmpcolor = _integrator->Li( p_scene, ray, 0, 10000, _nbLightSamples );
+					Vec3f tmpcolor = _integrator->Li( p_scene, ray, 0.f, 10000.f, _nbLightSamples );
 					color += tmpcolor;
 				}
 				color /= _nbPixelSamples;
-				p_texture.setPixel( i, j, glm::clamp(color,Vec3f(0,0,0),Vec3f(1,1,1)) );
+				p_texture.setPixel( i, j, glm::clamp(color,Vec3f(0.f),Vec3f(1.f)) );
 #endif
 			}
 			progressBar.next();

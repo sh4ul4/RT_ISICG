@@ -28,6 +28,8 @@ namespace RT_ISICG
 
 		virtual float getIOR() const { return 1.f; }
 
+		virtual float getTransparency() const { return 0.f; }
+
 	  protected:
 		std::string _name;
 	};

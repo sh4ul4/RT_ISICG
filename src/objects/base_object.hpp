@@ -4,6 +4,7 @@
 #include "defines.hpp"
 #include "hit_record.hpp"
 #include "materials/base_material.hpp"
+#include "lights/base_light.hpp"
 #include "ray.hpp"
 #include <vector>
 
@@ -19,6 +20,8 @@ namespace RT_ISICG
 
 		virtual inline BaseMaterial * getMaterial() const final { return _material; }
 		virtual inline void			  setMaterial( BaseMaterial * p_material ) final { _material = p_material; }
+		virtual BaseLight *			  getLight() const { return nullptr; }
+		virtual float				  getMaxDepth() const { return 0.f; }
 
 		// Check for nearest intersection: if found fill p_hitRecord.
 		virtual bool intersect( const Ray & p_ray,
@@ -27,9 +30,7 @@ namespace RT_ISICG
 								HitRecord & p_hitRecord ) const = 0;
 
 		// Check for any intersection: if found return true
-		virtual bool intersectAny( const Ray & p_ray,
-								const float p_tMin,
-								const float p_tMax ) const = 0;
+		virtual bool intersectAny( const Ray & p_ray, const float p_tMin, const float p_tMax ) const = 0;
 
 	  protected:
 		const std::string _name;

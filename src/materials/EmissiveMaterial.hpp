@@ -12,8 +12,8 @@ namespace RT_ISICG
 	class EmissiveMaterial : public BaseMaterial
 	{
 	  public:
-		EmissiveMaterial( const std::string & p_name, const Vec3f & p_diffuse, const Vec3f & p_specular )
-			: BaseMaterial( p_name ), _diffuse( p_diffuse ), _specular( p_specular, SPECULAR_LEN )
+		EmissiveMaterial( const std::string & p_name, const Vec3f & p_diffuse, const Vec3f & p_specular, const float p_maxDepth )
+			: BaseMaterial( p_name ), _diffuse( p_diffuse ), _specular( p_specular, SPECULAR_LEN ), _maxDepth(p_maxDepth)
 		{
 		}
 
@@ -23,7 +23,16 @@ namespace RT_ISICG
 					 const HitRecord &	 p_hitRecord,
 					 const LightSample & p_lightSample ) const override
 		{
-			return _diffuse.evaluate();
+			float	  distance = 0.f;
+			HitRecord hr;
+			Ray		  r( p_hitRecord._point, p_ray.getDirection() );
+			if ( p_hitRecord._object->intersect( r, 0.001f, 10000.f, hr ) )
+			{
+				distance = glm::distance( p_hitRecord._point, hr._point );
+			}
+			float effectiveDepth = ( ( distance*distance ) / _maxDepth );
+			return ( _specular.getKs() / 8.f ) * effectiveDepth
+				   + ( 1.f - effectiveDepth ) * ( _diffuse.evaluate() / 8.f );
 		}
 
 		inline const Vec3f & getFlatColor() const override { return _diffuse.getKd(); }
@@ -31,6 +40,7 @@ namespace RT_ISICG
 	  protected:
 		PhongBRDF	_specular;
 		LambertBRDF _diffuse;
+		float		_maxDepth;
 	};
 
 } // namespace RT_ISICG

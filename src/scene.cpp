@@ -19,9 +19,8 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
-#define _CURRENT_TP 6//0xDEADBEEF
+#define _CURRENT_TP 0xDEADBEEF
 #define DATA_PATH "obj/"
-#define BIND_MTL 1
 
 namespace RT_ISICG
 {
@@ -83,7 +82,7 @@ namespace RT_ISICG
 		// triangle-shaped light-source
 		//_addLight(
 		//	new TriLight( Vec3f( 1.f, 10.f, 2.f ), Vec3f( 3.f, 1.f, 2.f ), Vec3f( 1.f, 1.f, 4.f ), WHITE, 30.f ) );
-		
+
 		// sphere-shaped light-source
 		_addLight( new GlobeLight( Vec3f( -2.f, 4.f, 3.f ), 1.f, WHITE, 20.f ) );
 	}
@@ -163,61 +162,22 @@ namespace RT_ISICG
 
 	void Scene::tp6( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
-		// Camera position & orientation
-		//cameraPosition = Vec3f( 0.f, 8.f, -8.f );
+#define CONF 0
+#if CONF
+#define BIND_MTL 1
 		cameraPosition = Vec3f( -250.f, 500.f, 330.f );
-		//cameraLookAt   = Vec3f( 0.f, -0.5f, 1.f );
-		cameraLookAt = Vec3f( 0.f, 350.f, 100.f );
-
-		// ================================================================
-		// Add materials .
-		// ================================================================
-		_addMaterial( new MatteMaterial( "RedMatte", RED, 0.6f ) );
-		_addMaterial( new MatteMaterial( "GreenMatte", GREEN, 0.6f ) );
-		_addMaterial( new MatteMaterial( "BlueMatte", BLUE, 0.6f ) );
-		_addMaterial( new MatteMaterial( "GreyMatte", GREY, 0.6f ) );
-		_addMaterial( new MatteMaterial( "MagentaMatte", MAGENTA, 0.6f ) );
-		_addMaterial( new MatteMaterial( "YellowMatte", YELLOW, 0.6f ) );
-		_addMaterial( new MatteMaterial( "CyanMatte", CYAN, 0.6f ) );
-
-		_addMaterial( new PlasticMaterial( "plastic", WHITE, WHITE ) );
-		_addMaterial( new MirrorMaterial( "WhiteMirror" ) );
-		//_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f ) );
-		//_addMaterial( new RealisticMaterial( "realistic", GREY, GREY, 0.5f ) );
-		//_addMaterial( new EmissiveMaterial( "emissive", GREY, GREY ) );
-		// ================================================================
-		// Add objects .
-		// ================================================================
-		// OBJ.
+		cameraLookAt   = Vec3f( 0.f, 350.f, 100.f );
 		loadFileTriangleMesh( "conference", DATA_PATH "conference/conference.obj" );
-		//_attachMaterialToObject( "plastic", "bunny" );
-		//loadFileTriangleMesh( "bunny", DATA_PATH "bunny.obj" );
-		//_attachMaterialToObject( "plastic", "bunny" );
-		//loadFileTriangleMesh( "conference", DATA_PATH "conference/conference.obj" );
-		//_attachMaterialToObject( "CyanMatte", "conference" );
-
-		//_addObject( new Sphere( "spherelight", Vec3f( 0.f, 2.f, 1.f ), 0.5f) );
-		//_attachMaterialToObject( "emissive", "spherelight" );
-		// Pseudo Cornell box made with infinite planes .
-		/*_addObject( new Plane( "PlaneGround", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
-		_attachMaterialToObject( "WhiteMirror", "PlaneGround" );
-		_addObject( new Plane( "PlaneLeft", Vec3f( 5.f, 0.f, 0.f ), Vec3f( -1.f, 0.f, 0.f ) ) );
-		_attachMaterialToObject( "RedMatte", "PlaneLeft" );
-		_addObject( new Plane( "PlaneCeiling", Vec3f( 0.f, 7.f, 0.f ), Vec3f( 0.f, -1.f, 0.f ) ) );
-		_attachMaterialToObject( "GreenMatte", "PlaneCeiling" );
-		_addObject( new Plane( "PlaneRight", Vec3f( -5.f, 0.f, 0.f ), Vec3f( 1.f, 0.f, 0.f ) ) );
-		_attachMaterialToObject( "BlueMatte", "PlaneRight" );
-		_addObject( new Plane( "PlaneFront", Vec3f( 0.f, 0.f, 10.f ), Vec3f( 0.f, 0.f, -1.f ) ) );
-		_attachMaterialToObject( "MagentaMatte", "PlaneFront" );
-		_addObject( new Plane( "PlaneRear", Vec3f( 0.f, 0.f, -10.f ), Vec3f( 0.f, 0.f, 1.f ) ) );
-		_attachMaterialToObject( "YellowMatte", "PlaneRear" );*/
-		// ================================================================
-		// Add lights .
-		// ================================================================
 		_addLight( new PointLight( Vec3f( -250.f, 500.f, 330.f ), WHITE, 100.f ) );
-		//_addLight( new PointLight( Vec3f( 0.f, 350.f, 100.f ), WHITE, 600000.f ) );
-		//_addLight( new QuadLight( Vec3f( 900.f, 600.f, -300.f ),Vec3f( -800.f, 0.f, 0.f ),Vec3f( 0.f, 0.f, 300.f ), WHITE, 20.f ) );
-		//_addLight( new GlobeLight( Vec3f( -250.f, 500.f, 330.f ), 0.6f, WHITE, 10000.f ) );
+#else
+#define BIND_MTL 0
+		_addMaterial( new PlasticMaterial( "plastic", WHITE, WHITE ) );
+		cameraPosition = Vec3f( 0.f, 0.f, -6.f );
+		cameraLookAt   = Vec3f( 0.f, 0.f, 0.f );
+		loadFileTriangleMesh( "bunny", DATA_PATH "bunny.obj" );
+		_attachMaterialToObject( "plastic", "bunny" );
+		_addLight( new PointLight( Vec3f( 0.f, 2.f, -6.f ), WHITE, 60.f ) );
+#endif
 	}
 
 	void Scene::tp0( Vec3f & cameraPosition, Vec3f & cameraLookAt )
@@ -236,12 +196,13 @@ namespace RT_ISICG
 		_addMaterial( new PlasticMaterial( "GreyPlastic", GREY, GREY ) );
 		_addMaterial( new PlasticMaterial( "MagentaPlastic", MAGENTA, MAGENTA ) );
 		_addMaterial( new MirrorMaterial( "WhiteMirror" ) );
-		_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f ) );
-		_addMaterial( new EmissiveMaterial( "red", RED, RED ) );
+		_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f, 60.f, WHITE ) );
 
 		// ================================================================
 		// Add objects.
 		// ================================================================
+		_addObject( new Sphere( "tmp", Vec3f( -2.f, 1.f, 2.f ), 1.f ) );
+		_attachMaterialToObject( "WhiteTransparent", "tmp" );
 		// Spheres .
 		_addObject( new Sphere( "bauch", Vec3f( 0.f, 0.5f, 8.f ), 3.f ) );
 		_attachMaterialToObject( "BluePlastic", "bauch" );
@@ -268,7 +229,7 @@ namespace RT_ISICG
 
 		//_addObject( new Sphere( "Lense1", Vec3f( -2.89f, 6.99f, 0.021f ), 0.00004f ) );
 		//_attachMaterialToObject( "WhitePlastic", "Lense1" );
-		// 
+		//
 		// Pseudo Cornell box made with infinite planes .
 		_addObject( new Plane( "PlaneGround", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
 		_attachMaterialToObject( "GreenPlastic", "PlaneGround" );
@@ -284,12 +245,12 @@ namespace RT_ISICG
 		// ================================================================
 		// Add lights.
 		// ================================================================
-		//_addLight( new PointLight( Vec3f( -2.9f, 7.f, 0.f ), WHITE, 100.f ) );
+		_addGlobeLightObject( "lo", Vec3f( 2.f, 4.f, 2.f ), 0.6f, WHITE, BLUE, 20.f );
+		_addLight( new PointLight( Vec3f( -2.9f, 7.f, 0.f ), WHITE, 100.f ) );
 		//_addLight( new PointLight( Vec3f( 2.9f, -2.9f, 0.f ), WHITE, 100.f ) );
-		_addLight( new GlobeLight( Vec3f( -2.9f, 7.f, 0.f ), 0.6f, WHITE, 40.f ) );
-		_addLight( new GlobeLight( Vec3f( 3.f, -2.f, 0.f ), 0.6f, WHITE, 40.f ) );
-		//_addLight(
-		//	new QuadLight( Vec3f( 1.f, 5.f, -2.f ), Vec3f( -2.f, 0.f, 0.f ), Vec3f( 0.f, 1.f, 2.f ), WHITE, 60.f ) );
+		//_addLight( new PointLight( Vec3f( 0.f, 4.f, -6.f ), WHITE, 100.f ) );
+		//_addLight( new GlobeLight( Vec3f( -2.9f, 7.f, 0.f ), 0.6f, WHITE, 40.f ) );
+		//_addLight( new GlobeLight( Vec3f( 3.f, -2.f, 0.f ), 0.6f, WHITE, 40.f ) );
 	}
 
 	Scene::Scene() { _addMaterial( new ColorMaterial( "default", WHITE ) ); }
@@ -396,7 +357,7 @@ namespace RT_ISICG
 				aiString mtlName;
 				mtl->Get( AI_MATKEY_NAME, mtlName );
 
-#ifdef BIND_MTL
+#if BIND_MTL
 				_addMaterial( new PlasticMaterial( std::string( mtlName.C_Str() ), kd, ks ) );
 				_attachMaterialToObject( mtlName.C_Str(), meshName );
 #endif
@@ -461,6 +422,20 @@ namespace RT_ISICG
 	}
 
 	void Scene::_addLight( BaseLight * p_light ) { _lightList.emplace_back( p_light ); }
+
+	void Scene::_addGlobeLightObject( const std::string & p_name,
+									  const Vec3f &		  p_position,
+									  const float		  p_radius,
+									  const Vec3f &		  p_objectColor,
+									  const Vec3f &		  p_lightColor,
+									  const float		  p_power )
+	{
+		_addMaterial( new EmissiveMaterial( p_name + "mat", p_lightColor, p_objectColor, p_radius * 2.f ) );
+		GlobeLight * light = new GlobeLight( p_position, p_radius, p_lightColor, p_power );
+		_addLight( light );
+		_addObject( new SphereLightObject( p_name, p_position, p_radius - 0.001f, p_objectColor, p_power, light ) );
+		_attachMaterialToObject( p_name + "mat", p_name );
+	}
 
 	void Scene::_attachMaterialToObject( const std::string & p_materialName, const std::string & p_objectName )
 	{

@@ -3,6 +3,8 @@
 #include "WhittedIntegrator.hpp"
 #include "glm/geometric.hpp"
 
+#define SEMITRANSPARENCY 1
+
 namespace RT_ISICG
 {
 	Vec3f WhittedIntegrator::Li( const Scene & p_scene,
@@ -13,8 +15,6 @@ namespace RT_ISICG
 	{
 		return LiRec( 0, false, 1.f, p_scene, p_ray, p_tMin, p_tMax, p_nbLightSamples );
 	}
-
-	Vec3f reflect( const Vec3f & I, const Vec3f & N ) { return I - 2.f * glm::dot( I, N ) * N; }
 
 	Vec3f WhittedIntegrator::LiRec( const float	  depth,
 		const bool inside,
@@ -45,6 +45,8 @@ namespace RT_ISICG
 			else if ( hitRecord._object->getMaterial()->isTransparent() && depth <= _nbBounces )
 			{
 				const Vec3f reflectDir( glm::normalize( glm::reflect( p_ray.getDirection(), hitRecord._normal ) ) );
+
+				
 
 				const float ni	= inside ? hitRecord._object->getMaterial()->getIOR() : refractIdx;
 				const float no	= inside ? refractIdx : hitRecord._object->getMaterial()->getIOR();
@@ -88,7 +90,16 @@ namespace RT_ISICG
 										  p_tMin + 0.01f,
 										  p_tMax,
 										  p_nbLightSamples );
-					;
+#if SEMITRANSPARENCY
+					const float maxDepth	 = hitRecord._object->getMaxDepth();
+					const float transparency = hitRecord._object->getMaterial()->getTransparency();
+					const float dist		 = glm::distance( hitRecord._point, p_ray.getOrigin() ) / maxDepth;
+					const float factor		 = dist * dist * ( 1.f - ( transparency / 100.f ) );
+					if ( inside )
+					{
+						res = ( ( 1.f - factor ) * res + factor * hitRecord._object->getMaterial()->getFlatColor() );
+					}
+#endif
 				}
 			}
 			else
@@ -96,7 +107,7 @@ namespace RT_ISICG
 				const float cosTheta = glm::dot( -p_ray.getDirection(), hitRecord._normal );
 				for ( BaseLight * bl : p_scene.getLights() )
 				{
-					if ( bl->isSurface() )
+					if ( bl->isSurface() && hitRecord._object->getLight() != bl ) // make light objects ignore themselves
 					{
 						Vec3f tmp( 0.f );
 						for ( size_t i = 0; i < p_nbLightSamples; i++ )
