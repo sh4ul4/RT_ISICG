@@ -3,7 +3,7 @@
 #include "WhittedIntegrator.hpp"
 #include "glm/geometric.hpp"
 
-#define SEMITRANSPARENCY 1
+#define SEMITRANSPARENCY 0
 
 namespace RT_ISICG
 {
@@ -46,8 +46,6 @@ namespace RT_ISICG
 			{
 				const Vec3f reflectDir( glm::normalize( glm::reflect( p_ray.getDirection(), hitRecord._normal ) ) );
 
-				
-
 				const float ni	= inside ? hitRecord._object->getMaterial()->getIOR() : refractIdx;
 				const float no	= inside ? refractIdx : hitRecord._object->getMaterial()->getIOR();
 				const float eta = ni / no;
@@ -68,9 +66,6 @@ namespace RT_ISICG
 				{
 					const Vec3f refractDir(
 						glm::normalize( glm::refract( p_ray.getDirection(), hitRecord._normal, eta ) ) );
-					const Ray refractRay
-						= Ray( hitRecord._point,
-							   glm::normalize( glm::refract( p_ray.getDirection(), hitRecord._normal, eta ) ) );
 					const float R = fresnelEquation( refractDir, hitRecord._normal, ni, no, cosThetaIn );
 					res += R
 							   * LiRec( depth + 1.f,
@@ -114,8 +109,7 @@ namespace RT_ISICG
 						{
 							const LightSample ls = bl->sample( hitRecord._point );
 							Ray				  shadowRay( hitRecord._point, -ls._direction );
-							shadowRay.offset( hitRecord._normal );
-							if ( !p_scene.intersectAny( shadowRay, 0.f, ls._distance ) )
+							if ( !p_scene.intersectAny( shadowRay, 0.001f, ls._distance ) )
 							{
 								tmp += _directLighting( p_ray, ls, hitRecord, cosTheta );
 							}
@@ -127,8 +121,7 @@ namespace RT_ISICG
 					{
 						const LightSample ls = bl->sample( hitRecord._point );
 						Ray				  shadowRay( hitRecord._point, -ls._direction );
-						shadowRay.offset( hitRecord._normal );
-						if ( !p_scene.intersectAny( shadowRay, 0.f, ls._distance ) )
+						if ( !p_scene.intersectAny( shadowRay, 0.001f, ls._distance ) )
 						{
 							res += _directLighting( p_ray, ls, hitRecord, cosTheta );
 						}

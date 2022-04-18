@@ -2,6 +2,7 @@
 #define __RT_ISICG_PERSPECTIVE_CAMERA__
 
 #include "base_camera.hpp"
+#include "utils/random.hpp"
 
 namespace RT_ISICG
 {
@@ -18,12 +19,20 @@ namespace RT_ISICG
 
 		~PerspectiveCamera() = default;
 
+		inline Vec2f getRandomApperturePoint() const {
+			// circular apperture
+			float  angle  =  randomFloat() * 2.f * PIf;
+			float radius = sqrt( randomFloat() );
+			return Vec2f( cos( angle ), sin( angle ) ) * radius * _apertureRadius;
+		}
+
 		inline Ray generateRay( const float p_sx, const float p_sy ) const override
 		{
-			/// TODO !
-			Vec3f origin = _viewportTopLeftCorner + p_sx * _viewportU - p_sy * _viewportV;
-			Vec3f direction = glm::normalize(origin - _position);
-			return Ray( origin, direction );
+			Vec2f ap = getRandomApperturePoint();
+			Vec3f viewportPos = _viewportTopLeftCorner + p_sx * _viewportU - p_sy * _viewportV;
+			Vec3f focalPointPos = viewportPos + ap.x * _u - ap.y * _v - _focalDistance * _w;
+			Vec3f direction = glm::normalize( focalPointPos - _position );
+			return Ray( viewportPos, direction );
 		}
 
 	  private:
@@ -31,8 +40,9 @@ namespace RT_ISICG
 
 	  private:
 		float _fovy			 = 60.f;
-		float _focalDistance = 1.f;
+		float _focalDistance = 0.0001f;
 		float _aspectRatio	 = 1.f;
+		float _apertureRadius = 0.0001f;
 
 		// Local coordinates system
 		Vec3f _u = Vec3f( 1.f, 0.f, 0.f );

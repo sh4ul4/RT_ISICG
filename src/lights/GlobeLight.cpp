@@ -38,9 +38,10 @@ namespace RT_ISICG
 
 		return false;
 	}
-
+#define VOLUMIC 1
 	LightSample GlobeLight::sample( const Vec3f & p_point ) const
 	{
+#if VOLUMIC
 		if ( glm::distance( p_point, _position ) <= _radius )
 			return LightSample( glm::normalize( _position - p_point ), 0.f, _color * _power, 1.f );
 
@@ -59,5 +60,36 @@ namespace RT_ISICG
 			= ( 1.f / _area ) * ( distance * distance ) / glm::dot( glm::normalize( randPos - _position ), -direction );
 		const Vec3f radiance = ( _color * _power ) / pdf;
 		return LightSample( -direction, distance, radiance, pdf );
+#else
+		if ( glm::distance( p_point, _position ) <= _radius )
+			return LightSample( glm::normalize( _position - p_point ), 0.f, _color * _power, 1.f );
+
+		// find random vector in 2D circle
+		float r		= _radius * sqrt( randomFloat() );
+		float theta = randomFloat() * 2.f * PIf;
+		Vec3f v( r * cos( theta ), r * sin( theta ), 0.f );
+
+		// rotate back to 3D depending on the normal vector of the circle (2D representation of the visible hemisphere)
+		glm::quat q( glm::normalize( p_point - _position ), Vec3f( 0.f, 0.f, 1.f ) );
+		q			  = glm::normalize( q );
+		Mat4f	  rot = glm::toMat4( q );
+		glm::vec4 tmp = rot * glm::vec4( v, 1.f );
+
+		// this gives us the random position on the circle in 3D
+		Vec3f randPos = Vec3f( tmp.x, tmp.y, tmp.z );
+		randPos += _position;
+
+		// intersect the ray between the circle-point and p_point to get the corresponding point on the globe hemisphere
+		float t1;
+		Vec3f D = glm::normalize( p_point - randPos );
+		if ( intersectGlobe( t1, p_point, randPos ) ) randPos = randPos + D * t1;
+
+		const float distance  = glm::distance( randPos, p_point );
+		const Vec3f direction = glm::normalize( randPos - p_point );
+		const float pdf
+			= ( 1.f / _area ) * ( distance * distance ) / glm::dot( glm::normalize( randPos - _position ), direction );
+		const Vec3f radiance = ( _color * _power ) / pdf;
+		return LightSample( -direction, distance, radiance, pdf );
+#endif
 	}
 } // namespace RT_ISICG

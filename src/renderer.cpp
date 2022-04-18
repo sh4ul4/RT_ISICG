@@ -9,6 +9,10 @@
 //#define TP1_EX2 // without antialiasing
 #define TP1_EX3 // with antialiasing
 
+#ifdef TP1_EX3
+#define __ALEA__ 1
+#endif
+
 namespace RT_ISICG
 {
 	Renderer::Renderer() { _integrator = new RayCastIntegrator(); }
@@ -53,7 +57,7 @@ namespace RT_ISICG
 
 		progressBar.start( height, 50 );
 		chrono.start();
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic)
 		for ( int j = 0; j < height; j++ )
 		{
 			for ( int i = 0; i < width; i++ )
@@ -62,11 +66,20 @@ namespace RT_ISICG
 				Vec3f color( 0.f );
 				for ( int raycntr = 0; raycntr < _nbPixelSamples; raycntr++ )
 				{
-					int			aleax = rand() % _nbPixelSamples;
-					int			aleay = rand() % _nbPixelSamples;
-					const float p_sx  = ( i + (float)aleax / _nbPixelSamples ) / ( width - 1 );
-					const float p_sy  = ( j + (float)aleay / _nbPixelSamples ) / ( height - 1 );
+#if __ALEA__
+					//int			aleax = rand() % _nbPixelSamples;
+					//int			aleay = rand() % _nbPixelSamples;
+					const float p_sx  = ( i + randomFloat() ) / ( width - 1 );
+					const float p_sy  = ( j + randomFloat() ) / ( height - 1 );
 					const Ray	ray	  = p_camera->generateRay( p_sx, p_sy );
+#else
+					int			root  = sqrt( _nbPixelSamples );
+					int			x = raycntr / root;
+					int			y = raycntr % root;
+					const float p_sx  = ( i + (float)x / _nbPixelSamples ) / ( width - 1 );
+					const float p_sy  = ( j + (float)y / _nbPixelSamples ) / ( height - 1 );
+					const Ray	ray	  = p_camera->generateRay( p_sx, p_sy );
+#endif
 #else
 				const Ray ray = p_camera->generateRay( ( i + 0.5f ) / ( width - 1 ), ( j + 0.5f ) / ( height - 1 ) );
 #endif

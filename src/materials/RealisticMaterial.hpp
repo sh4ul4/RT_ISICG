@@ -23,8 +23,6 @@ namespace RT_ISICG
 		{
 			const Vec3f wo = glm::normalize( -p_lightSample._direction );
 			const Vec3f wi = glm::normalize( -p_ray.getDirection() );
-			//const Vec3f wo = -p_lightSample._direction;
-			//const Vec3f wi = -p_ray.getDirection();
 			return ( 1 - _metalness ) * _diffuse.evaluate( wi, wo, p_hitRecord._normal )
 				   + _metalness * _specular.evaluate( wi, wo, p_hitRecord._normal );
 		}

@@ -31,8 +31,9 @@ namespace RT_ISICG
 				distance = glm::distance( p_hitRecord._point, hr._point );
 			}
 			float effectiveDepth = ( ( distance*distance ) / _maxDepth );
-			return ( _specular.getKs() / 8.f ) * effectiveDepth
-				   + ( 1.f - effectiveDepth ) * ( _diffuse.evaluate() / 8.f );
+			float area			 = 4.f * PIf * ( _maxDepth / 2.f ) * ( _maxDepth / 2.f );
+			return ( _specular.getKs() / area ) * effectiveDepth
+				   + ( 1.f - effectiveDepth ) * ( _diffuse.getKd() / area );
 		}
 
 		inline const Vec3f & getFlatColor() const override { return _diffuse.getKd(); }

@@ -166,6 +166,7 @@ xcopy /y /d  "$(ProjectDir)lib\zlib1.dll" "$(OutDir)"</Command>
     <ClCompile Include="src\lights\QuadLight.cpp" />
     <ClCompile Include="src\lights\TriLight.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\objects\implicit_surface.cpp" />
     <ClCompile Include="src\objects\Plane.cpp" />
     <ClCompile Include="src\objects\sphere.cpp" />
     <ClCompile Include="src\objects\SphereLightObject.cpp" />
@@ -211,6 +212,14 @@ xcopy /y /d  "$(ProjectDir)lib\zlib1.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\materials\RealisticMaterial.hpp" />
     <ClInclude Include="src\materials\TransparentMaterial.hpp" />
     <ClInclude Include="src\objects\base_object.hpp" />
+    <ClInclude Include="src\objects\ImplicitCuboid.hpp" />
+    <ClInclude Include="src\objects\ImplicitFractal.hpp" />
+    <ClInclude Include="src\objects\ImplicitInterpolation.hpp" />
+    <ClInclude Include="src\objects\ImplicitIntersection.hpp" />
+    <ClInclude Include="src\objects\ImplicitPlane.hpp" />
+    <ClInclude Include="src\objects\ImplicitSphere.hpp" />
+    <ClInclude Include="src\objects\ImplicitSubstraction.hpp" />
+    <ClInclude Include="src\objects\implicit_surface.hpp" />
     <ClInclude Include="src\objects\Plane.hpp" />
     <ClInclude Include="src\objects\sphere.hpp" />
     <ClInclude Include="src\objects\SphereLightObject.hpp" />

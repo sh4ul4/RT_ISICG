@@ -4,6 +4,14 @@
 #include "objects/Plane.hpp"
 #include "objects/triangle_mesh.hpp"
 #include "objects/SphereLightObject.hpp"
+#include "objects/implicit_surface.hpp"
+#include "objects/ImplicitSphere.hpp"
+#include "objects/ImplicitPlane.hpp"
+#include "objects/ImplicitFractal.hpp"
+#include "objects/ImplicitIntersection.hpp"
+#include "objects/ImplicitCuboid.hpp"
+#include "objects/ImplicitInterpolation.hpp"
+#include "objects/ImplicitSubstraction.hpp"
 #include "lights/PointLight.hpp"
 #include "lights/QuadLight.hpp"
 #include "lights/TriLight.hpp"
@@ -19,8 +27,10 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
-#define _CURRENT_TP 0xDEADBEEF
+#define _CURRENT_TP 0xFACADE
 #define DATA_PATH "obj/"
+
+std::vector<float> RT_ISICG::Rand::diss;
 
 namespace RT_ISICG
 {
@@ -76,15 +86,15 @@ namespace RT_ISICG
 
 		// Add lighting.
 		// quader-shaped light-source
-		//_addLight(
-		//	new QuadLight( Vec3f( 1.f, 10.f, 2.f ), Vec3f( -2.f, 0.f, 0.f ), Vec3f( 0.f, 0.f, 2.f ), WHITE, 40.f ) );
+		_addLight(
+			new QuadLight( Vec3f( 1.f, 10.f, 2.f ), Vec3f( -2.f, 0.f, 0.f ), Vec3f( 0.f, 0.f, 2.f ), WHITE, 40.f ) );
 
 		// triangle-shaped light-source
 		//_addLight(
 		//	new TriLight( Vec3f( 1.f, 10.f, 2.f ), Vec3f( 3.f, 1.f, 2.f ), Vec3f( 1.f, 1.f, 4.f ), WHITE, 30.f ) );
 
 		// sphere-shaped light-source
-		_addLight( new GlobeLight( Vec3f( -2.f, 4.f, 3.f ), 1.f, WHITE, 20.f ) );
+		//_addLight( new GlobeLight( Vec3f( -2.f, 4.f, 3.f ), 1.f, WHITE, 6.f ) );
 	}
 
 	void Scene::tp4( Vec3f & cameraPosition, Vec3f & cameraLookAt )
@@ -156,21 +166,19 @@ namespace RT_ISICG
 		// Add lights.
 		// ================================================================
 		_addLight( new PointLight( Vec3f( 0.f, 5.f, 0.f ), WHITE, 100.f ) );
-		//_addLight(
-		//	new QuadLight( Vec3f( 1.f, 5.f, -2.f ), Vec3f( -2.f, 0.f, 0.f ), Vec3f( 0.f, 1.f, 2.f ), WHITE, 60.f ) );
 	}
 
 	void Scene::tp6( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
-#define CONF 0
-#if CONF
+#define CONF 1
 #define BIND_MTL 1
+#if CONF
 		cameraPosition = Vec3f( -250.f, 500.f, 330.f );
 		cameraLookAt   = Vec3f( 0.f, 350.f, 100.f );
 		loadFileTriangleMesh( "conference", DATA_PATH "conference/conference.obj" );
-		_addLight( new PointLight( Vec3f( -250.f, 500.f, 330.f ), WHITE, 100.f ) );
+		_addLight(
+			new QuadLight( Vec3f( 900, 600, -300 ), Vec3f( -800.f, 0.f, 0.f ), Vec3f( 0.f, 0.f, 300.f ), WHITE, 20.f ) );
 #else
-#define BIND_MTL 0
 		_addMaterial( new PlasticMaterial( "plastic", WHITE, WHITE ) );
 		cameraPosition = Vec3f( 0.f, 0.f, -6.f );
 		cameraLookAt   = Vec3f( 0.f, 0.f, 0.f );
@@ -178,6 +186,68 @@ namespace RT_ISICG
 		_attachMaterialToObject( "plastic", "bunny" );
 		_addLight( new PointLight( Vec3f( 0.f, 2.f, -6.f ), WHITE, 60.f ) );
 #endif
+	}
+
+	void Scene::makeLens( float depth, float CenterDist, float radius )
+	{
+		std::vector<ImplicitSurface *> objcts;
+		objcts.emplace_back( new ImplicitSphere( "sph1", Vec3f( 0.f, 4.f, -4.91f ), radius ) );
+		objcts.emplace_back( new ImplicitSphere( "sph2", Vec3f( 0.f, 4.f, -5.9f ), radius ) );
+		_addObject( new ImplicitIntersection( "intersection", objcts ) );
+		_attachMaterialToObject( "LensMaterial", "intersection" );
+	}
+
+	void Scene::lenses(Vec3f& cameraPosition, Vec3f& cameraLookAt) {
+		// Camera position & orientation
+		cameraPosition = Vec3f( 0.f, 0.f, 0.f );
+		cameraLookAt   = Vec3f( 0.f, 0.f, 1.f );
+
+		_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f, 100.f, WHITE ) );
+		_addMaterial( new MirrorMaterial( "WhiteMirror" ) );
+		_addMaterial( new PlasticMaterial( "WhitePlastic", WHITE, WHITE ) );
+		_addMaterial( new PlasticMaterial( "RedPlastic", RED, RED ) );
+		_addMaterial( new PlasticMaterial( "GreenPlastic", GREEN, GREEN ) );
+		_addMaterial( new PlasticMaterial( "BluePlastic", BLUE, BLUE ) );
+		_addMaterial( new PlasticMaterial( "GreyPlastic", GREY, GREY ) );
+		_addMaterial( new PlasticMaterial( "MagentaPlastic", MAGENTA, MAGENTA ) );
+
+		_addMaterial( new TransparentMaterial( "LensMaterial1", 1.3f, 100.f, WHITE ) );
+		_addMaterial( new TransparentMaterial( "LensMaterial2", 0.4f, 100.f, WHITE ) );
+
+		// Pseudo Cornell box made with infinite planes .
+		_addObject( new Plane( "PlaneGround", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
+		_attachMaterialToObject( "GreenPlastic", "PlaneGround" );
+		_addObject( new Plane( "PlaneLeft", Vec3f( 5.f, 0.f, 0.f ), Vec3f( -1.f, 0.f, 0.f ) ) );
+		_attachMaterialToObject( "RedPlastic", "PlaneLeft" );
+		_addObject( new Plane( "PlaneCeiling", Vec3f( 0.f, 8.f, 0.f ), Vec3f( 0.f, -1.f, 0.f ) ) );
+		_attachMaterialToObject( "GreenPlastic", "PlaneCeiling" );
+		_addObject( new Plane( "PlaneRight", Vec3f( -5.f, 0.f, 0.f ), Vec3f( 1.f, 0.f, 0.f ) ) );
+		_attachMaterialToObject( "RedPlastic", "PlaneRight" );
+		_addObject( new Plane( "PlaneFront", Vec3f( 0.f, 0.f, 20.f ), Vec3f( 0.f, 0.f, -1.f ) ) );
+		_attachMaterialToObject( "GreenPlastic", "PlaneFront" );
+
+		_addObject( new Sphere( "sph1", Vec3f( 0.5f, 1.f, 12.f ), 1.f ) );
+		_attachMaterialToObject( "BluePlastic", "sph1" );
+		_addObject( new Sphere( "sph2", Vec3f( -1.f, -0.5f, 8.f ), 1.f ) );
+		_attachMaterialToObject( "BluePlastic", "sph2" );
+
+		std::vector<ImplicitSurface *> lens1Surfaces;
+		lens1Surfaces.emplace_back( new ImplicitSphere( "_1", Vec3f( 0.f, 0.f, 2.99f ), 2.f ) );
+		lens1Surfaces.emplace_back( new ImplicitCuboid( "_2", Vec3f( 0.f, 0.f, -1.f ), Vec3f( 1.f, 1.f, 2.f ) ) );
+		//std::vector<ImplicitSurface *> lens1Surfaces2;
+		//lens1Surfaces2.emplace_back( new ImplicitIntersection( "lens1", lens1Surfaces ) );
+		//lens1Surfaces2.emplace_back( new ImplicitCuboid( "_3", Vec3f( 0.1f, 0.f, 1.99f ), Vec3f( 0.1f, 0.1f, 3.f ) ) );
+		_addObject( new ImplicitIntersection( "lens1", lens1Surfaces ) );
+		_attachMaterialToObject( "LensMaterial1", "lens1" );
+
+		std::vector<ImplicitSurface *> lens2Surfaces;
+		lens2Surfaces.emplace_back( new ImplicitSphere( "_1", Vec3f( 0.f, 0.f, 1.f ), 1.f ) );
+		lens2Surfaces.emplace_back( new ImplicitCuboid( "_2", Vec3f( 0.f, 0.f, 2.99f ), Vec3f( 1.f, 1.f, 1.f ) ) );
+		_addObject( new ImplicitIntersection( "lens2", lens2Surfaces ) );
+		_attachMaterialToObject( "LensMaterial2", "lens2" );
+		_addLight( new PointLight( cameraPosition, WHITE, 200.f ) );
+		_addLight( new PointLight( Vec3f( -2.9f, 7.f, 0.f ), WHITE, 200.f ) );
+		_addLight( new PointLight( Vec3f( 2.9f, -2.9f, 0.f ), WHITE, 200.f ) );
 	}
 
 	void Scene::tp0( Vec3f & cameraPosition, Vec3f & cameraLookAt )
@@ -196,13 +266,14 @@ namespace RT_ISICG
 		_addMaterial( new PlasticMaterial( "GreyPlastic", GREY, GREY ) );
 		_addMaterial( new PlasticMaterial( "MagentaPlastic", MAGENTA, MAGENTA ) );
 		_addMaterial( new MirrorMaterial( "WhiteMirror" ) );
-		_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f, 60.f, WHITE ) );
+		_addMaterial( new TransparentMaterial( "SemiTransparent", 1.3f, 60.f, YELLOW ) );
+		_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f, 100.f, WHITE ) );
 
 		// ================================================================
 		// Add objects.
 		// ================================================================
-		_addObject( new Sphere( "tmp", Vec3f( -2.f, 1.f, 2.f ), 1.f ) );
-		_attachMaterialToObject( "WhiteTransparent", "tmp" );
+		//_addObject( new Sphere( "ball", Vec3f( -0.5f, 3.f, -3.f ), 1.f ) );
+		//_attachMaterialToObject( "SemiTransparent", "ball" );
 		// Spheres .
 		_addObject( new Sphere( "bauch", Vec3f( 0.f, 0.5f, 8.f ), 3.f ) );
 		_attachMaterialToObject( "BluePlastic", "bauch" );
@@ -226,10 +297,7 @@ namespace RT_ISICG
 		_attachMaterialToObject( "MagentaPlastic", "ohr1" );
 		_addObject( new Sphere( "ohr2", Vec3f( 1.f, 6.f, 8.f ), 0.75f ) );
 		_attachMaterialToObject( "MagentaPlastic", "ohr2" );
-
-		//_addObject( new Sphere( "Lense1", Vec3f( -2.89f, 6.99f, 0.021f ), 0.00004f ) );
-		//_attachMaterialToObject( "WhitePlastic", "Lense1" );
-		//
+		
 		// Pseudo Cornell box made with infinite planes .
 		_addObject( new Plane( "PlaneGround", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
 		_attachMaterialToObject( "GreenPlastic", "PlaneGround" );
@@ -245,9 +313,9 @@ namespace RT_ISICG
 		// ================================================================
 		// Add lights.
 		// ================================================================
-		_addGlobeLightObject( "lo", Vec3f( 2.f, 4.f, 2.f ), 0.6f, WHITE, BLUE, 20.f );
+		//_addGlobeLightObject( "lo", Vec3f( 2.f, 4.f, 2.f ), 0.6f, WHITE, BLUE, 20.f );
 		_addLight( new PointLight( Vec3f( -2.9f, 7.f, 0.f ), WHITE, 100.f ) );
-		//_addLight( new PointLight( Vec3f( 2.9f, -2.9f, 0.f ), WHITE, 100.f ) );
+		_addLight( new PointLight( Vec3f( 2.9f, -2.9f, 0.f ), WHITE, 100.f ) );
 		//_addLight( new PointLight( Vec3f( 0.f, 4.f, -6.f ), WHITE, 100.f ) );
 		//_addLight( new GlobeLight( Vec3f( -2.9f, 7.f, 0.f ), 0.6f, WHITE, 40.f ) );
 		//_addLight( new GlobeLight( Vec3f( 3.f, -2.f, 0.f ), 0.6f, WHITE, 40.f ) );
@@ -273,6 +341,8 @@ namespace RT_ISICG
 
 	void Scene::init( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
+		generateRandoms();
+
 #if _CURRENT_TP == 0xDEADBEEF
 		tp0( cameraPosition, cameraLookAt );
 #elif _CURRENT_TP == 1
@@ -287,6 +357,8 @@ namespace RT_ISICG
 		tp5( cameraPosition, cameraLookAt );
 #elif _CURRENT_TP == 6
 		tp6( cameraPosition, cameraLookAt );
+#elif _CURRENT_TP == 0xFACADE
+		lenses( cameraPosition, cameraLookAt );
 #endif
 	}
 
