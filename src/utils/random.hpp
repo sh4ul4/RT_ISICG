@@ -10,7 +10,7 @@ namespace RT_ISICG
 	{
 	  public:
 		static std::vector<float> diss;
-		static const size_t		  _maxRand = 10000;
+		static const size_t		  _maxRand = 2000000;
 	};
 	static void generateRandoms()
 	{

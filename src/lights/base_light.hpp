@@ -15,7 +15,11 @@ namespace RT_ISICG
 
 		virtual LightSample sample( const Vec3f & p_point ) const = 0;
 
+		virtual Vec3f getPos() const = 0;
+
 		bool isSurface() const { return _isSurface;}
+
+		virtual Vec3f getEmissionFlux() const = 0;
 
 	  protected:
 		// TODO: give a name, like objects and materials

@@ -20,5 +20,11 @@ namespace RT_ISICG
 		GlobeLight() = delete;
 		GlobeLight( const Vec3f & position, const float radius, const Vec3f & color, const float power = 1.f );
 		LightSample sample( const Vec3f & p_point ) const;
+		Vec3f		getPos() const { return _position; }
+		Vec3f		getEmissionFlux() const // not finished
+		{
+			const Vec3f le = _color * _power;
+			return le / 4.f * PIf;
+		}
 	};
 } // namespace RT_ISICG

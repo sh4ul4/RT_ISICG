@@ -25,7 +25,7 @@ namespace RT_ISICG
 		Renderer renderer;
 		renderer.setIntegrator( IntegratorType::WHITTED_LIGHTING );
 		renderer.setBackgroundColor( GREY );
-		renderer.setNbPixelSamples( 16 );
+		renderer.setNbPixelSamples( 1 );
 		renderer.setNbLightSamples( 1 );
 
 		// Launch rendering.

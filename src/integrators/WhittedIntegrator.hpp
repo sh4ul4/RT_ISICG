@@ -2,6 +2,7 @@
 
 #include "base_integrator.hpp"
 #include "lights/PointLight.hpp"
+#include "PhotonCaster.hpp"
 
 namespace RT_ISICG
 {
@@ -11,13 +12,15 @@ namespace RT_ISICG
 		WhittedIntegrator() : BaseIntegrator() {}
 		virtual ~WhittedIntegrator() = default;
 
-		const IntegratorType getType() const override { return IntegratorType::DIRECT_LIGHTING; }
+		const IntegratorType getType() const override { return IntegratorType::WHITTED_LIGHTING; }
 
 		Vec3f Li( const Scene & p_scene,
 				  const Ray &	p_ray,
 				  const float	p_tMin,
 				  const float	p_tMax,
 				  const float	p_nbLightSamples = 1 ) const;
+
+		PhotonCaster * pc = nullptr;
 
 	  private:
 		Vec3f LiRec( const float   depth,
@@ -33,6 +36,11 @@ namespace RT_ISICG
 							   const LightSample & ls,
 							   const HitRecord &   hitRecord,
 							   const float		   cosTheta ) const;
+
+		Vec3f _indirectLighting( const Ray &		 ray,
+								 const LightSample & ls,
+								 const HitRecord &	 hitRecord,
+								 const float		 cosTheta ) const;
 
 		size_t _nbBounces = 5;
 

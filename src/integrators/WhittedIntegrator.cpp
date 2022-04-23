@@ -4,6 +4,7 @@
 #include "glm/geometric.hpp"
 
 #define SEMITRANSPARENCY 0
+#define PHOTONCAST 1
 
 namespace RT_ISICG
 {
@@ -13,7 +14,7 @@ namespace RT_ISICG
 								 const float   p_tMax,
 								 const float   p_nbLightSamples ) const
 	{
-		return LiRec( 0, false, 1.f, p_scene, p_ray, p_tMin, p_tMax, p_nbLightSamples );
+		return LiRec( 0, false, 1.f, p_scene, p_ray, p_tMin + 0.01f, p_tMax, p_nbLightSamples );
 	}
 
 	Vec3f WhittedIntegrator::LiRec( const float	  depth,
@@ -37,7 +38,7 @@ namespace RT_ISICG
 							  refractIdx,
 							  p_scene,
 							  Ray( hitRecord._point, glm::reflect( p_ray.getDirection(), hitRecord._normal ) ),
-							  p_tMin + 0.01f,
+							  p_tMin,
 							  p_tMax,
 							  p_nbLightSamples );
 			}
@@ -58,7 +59,7 @@ namespace RT_ISICG
 								  refractIdx,
 								  p_scene,
 								  Ray( hitRecord._point, reflectDir ),
-								  p_tMin + 0.01f,
+								  p_tMin,
 								  p_tMax,
 								  p_nbLightSamples );
 				}
@@ -73,7 +74,7 @@ namespace RT_ISICG
 										refractIdx,
 										p_scene,
 										Ray( hitRecord._point, reflectDir ),
-										p_tMin + 0.01f,
+										p_tMin,
 										p_tMax,
 										p_nbLightSamples )
 						   + ( 1.f - R )
@@ -82,7 +83,7 @@ namespace RT_ISICG
 										  refractIdx,
 										  p_scene,
 										  Ray( hitRecord._point, refractDir ),
-										  p_tMin + 0.01f,
+										  p_tMin,
 										  p_tMax,
 										  p_nbLightSamples );
 #if SEMITRANSPARENCY
@@ -113,6 +114,9 @@ namespace RT_ISICG
 							{
 								tmp += _directLighting( p_ray, ls, hitRecord, cosTheta );
 							}
+#if PHOTONCAST
+							tmp += _indirectLighting( p_ray, ls, hitRecord, cosTheta );
+#endif
 						}
 						tmp /= p_nbLightSamples;
 						res += tmp;
@@ -125,6 +129,9 @@ namespace RT_ISICG
 						{
 							res += _directLighting( p_ray, ls, hitRecord, cosTheta );
 						}
+#if PHOTONCAST
+						res += _indirectLighting( p_ray, ls, hitRecord, cosTheta );
+#endif
 					}
 				}
 			}
@@ -143,5 +150,32 @@ namespace RT_ISICG
 	{
 		const float cosTheta = glm::dot( -ls._direction, hitRecord._normal );
 		return hitRecord._object->getMaterial()->shade( ray, hitRecord, ls ) * ls._radiance * cosTheta;
+	}
+
+	Vec3f WhittedIntegrator::_indirectLighting( const Ray &		   ray,
+												   const LightSample & ls,
+												   const HitRecord &   hitRecord,
+												   const float		   cosTheta2 ) const
+	{
+		std::vector<PhotonKd3::Node *> knearest;
+		int							   k = 5;
+		pc->kd3.knn( hitRecord._point, k, knearest );
+		float r = 0.f;
+		Vec3f s( 0.f );
+		for ( auto node : knearest )
+		{
+			float d = glm::distance( node->p.pos, hitRecord._point );
+			d		= ( d * d ) / 2000000.f;
+			//if ( d < 0.01f )
+			//{
+				if ( d > r ) r = d;
+				// s += node->p.pow*1000.f;
+				s += ( node->p.pow / ( 0.00001f+ d ) );
+			//}
+			//else k--;
+		}
+		const Vec3f Lr = s / (float)k; // INV_PIf * r * r * ( s / (float)nclosest );
+		//std::cout << Lr.r << " " << Lr.g << " " << Lr.b << std::endl;
+		return glm::clamp( Lr, 0.f, 255.f );
 	}
 } // namespace RT_ISICG

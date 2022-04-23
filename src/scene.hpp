@@ -25,8 +25,9 @@ namespace RT_ISICG
 		void tp4( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 		void tp5( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 		void tp6( Vec3f & cameraPosition, Vec3f & cameraLookAt );
+		void tp7( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 		void lenses( Vec3f & cameraPosition, Vec3f & cameraLookAt );
-		void makeLens( float depth, float CenterDist, float radius );
+		void caustics( Vec3f & cameraPosition, Vec3f & cameraLookAt );
 
 	  public:
 		Scene();
