@@ -12,27 +12,25 @@ namespace RT_ISICG
 		PhotonCastIntegrator() {}
 		virtual ~PhotonCastIntegrator() = default;
 
-		void Li( const Scene &					   p_scene,
-				  const Ray &					   p_ray,
-				  const float					   p_tMin,
-				  const float					   p_tMax,
-				  const float					   p_nbLightSamples,
+		void Li( const Scene &					  p_scene,
+				 const Ray &					  p_ray,
+				 const float					  p_tMin,
+				 const float					  p_tMax,
 				 std::vector<PhotonKd3::Photon> & photons,
 				 const BaseLight *				  bl ) const;
 
 	  private:
-		void LiRec( const float   depth,
-					 const bool	   inside,
-					 const float   refractIdx,
-					 const Scene & p_scene,
-					 const Ray &   p_ray,
-					 const float   p_tMin,
-					 const float   p_tMax,
-					 const float   p_nbLightSamples,
+		void LiRec( const float						 depth,
+					const bool						 inside,
+					const float						 refractIdx,
+					const Scene &					 p_scene,
+					const Ray &						 p_ray,
+					const float						 p_tMin,
+					const float						 p_tMax,
 					std::vector<PhotonKd3::Photon> & photons,
 					const BaseLight *				 bl ) const;
 
-		size_t _nbBounces = 20;
+		size_t _nbBounces = 5;
 
 	  private:
 		float fresnelEquation( const Vec3f & I,

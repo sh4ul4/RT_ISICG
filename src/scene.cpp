@@ -27,7 +27,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
-#define _CURRENT_TP 5
+#define _CURRENT_TP 0xCAU
 #define DATA_PATH "obj/"
 
 std::vector<float> RT_ISICG::Rand::diss;
@@ -398,8 +398,8 @@ namespace RT_ISICG
 		//_addObject( new Sphere( "sphere2", Vec3f( -1.f, -2.f, 6.f ), 1.f ) );
 		//_attachMaterialToObject( "WhiteTransparent", "sphere2" );
 
-		//_addLight( new GlobeLight( Vec3f( 2.f, 0.f, 7.f ), 0.5f, WHITE, 50.f ) );
-		_addLight( new PointLight( Vec3f( 2.f, 0.f, 8.f ), WHITE, 100.f ) );
+		_addLight( new GlobeLight( Vec3f( 2.f, 0.f, 8.f ), 0.5f, WHITE, 50.f ) );
+		//_addLight( new PointLight( Vec3f( 2.f, 0.f, 8.f ), WHITE, 100.f ) );
 		//_addLight( new PointLight( cameraPosition, WHITE, 100.f ) );
 	}
 

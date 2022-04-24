@@ -18,7 +18,7 @@ namespace RT_ISICG
 	}
 
 	Vec3f WhittedIntegrator::LiRec( const float	  depth,
-		const bool inside,
+									const bool	  inside,
 									const float	  refractIdx,
 									const Scene & p_scene,
 									const Ray &	  p_ray,
@@ -34,7 +34,7 @@ namespace RT_ISICG
 			if ( hitRecord._object->getMaterial()->isMirror() && depth <= _nbBounces )
 			{
 				res += LiRec( depth + 1,
-							inside,
+							  inside,
 							  refractIdx,
 							  p_scene,
 							  Ray( hitRecord._point, glm::reflect( p_ray.getDirection(), hitRecord._normal ) ),
@@ -103,7 +103,8 @@ namespace RT_ISICG
 				const float cosTheta = glm::dot( -p_ray.getDirection(), hitRecord._normal );
 				for ( BaseLight * bl : p_scene.getLights() )
 				{
-					if ( bl->isSurface() && hitRecord._object->getLight() != bl ) // make light objects ignore themselves
+					if ( bl->isSurface()
+						 && hitRecord._object->getLight() != bl ) // make light objects ignore themselves
 					{
 						Vec3f tmp( 0.f );
 						for ( size_t i = 0; i < p_nbLightSamples; i++ )
@@ -152,30 +153,26 @@ namespace RT_ISICG
 		return hitRecord._object->getMaterial()->shade( ray, hitRecord, ls ) * ls._radiance * cosTheta;
 	}
 
-	Vec3f WhittedIntegrator::_indirectLighting( const Ray &		   ray,
-												   const LightSample & ls,
-												   const HitRecord &   hitRecord,
-												   const float		   cosTheta2 ) const
+	Vec3f WhittedIntegrator::_indirectLighting( const Ray &			ray,
+												const LightSample & ls,
+												const HitRecord &	hitRecord,
+												const float			cosTheta2 ) const
 	{
 		std::vector<PhotonKd3::Node *> knearest;
-		int							   k = 5;
+		const int					   k = 20; // number of nearest-neighbours to get
+		// knn-search
 		pc->kd3.knn( hitRecord._point, k, knearest );
-		float r = 0.f;
-		Vec3f s( 0.f );
+		float r = 0.f; // maximum radius to englobe all the nearest photons
+		Vec3f powSum( 0.f );
+		// add photon-effects together
 		for ( auto node : knearest )
 		{
 			float d = glm::distance( node->p.pos, hitRecord._point );
-			d		= ( d * d ) / 2000000.f;
-			//if ( d < 0.01f )
-			//{
-				if ( d > r ) r = d;
-				// s += node->p.pow*1000.f;
-				s += ( node->p.pow / ( 0.00001f+ d ) );
-			//}
-			//else k--;
+			if ( d > r ) r = d;
+			powSum += hitRecord._object->getMaterial()->shade( ray, hitRecord, ls ) * node->p.pow;
 		}
-		const Vec3f Lr = s / (float)k; // INV_PIf * r * r * ( s / (float)nclosest );
-		//std::cout << Lr.r << " " << Lr.g << " " << Lr.b << std::endl;
+		// normalize power
+		const Vec3f Lr = ( powSum / ( PIf * r * r ) );
 		return glm::clamp( Lr, 0.f, 255.f );
 	}
 } // namespace RT_ISICG

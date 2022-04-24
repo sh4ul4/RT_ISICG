@@ -21,7 +21,7 @@ namespace RT_ISICG
 		Vec3f				 getEmissionFlux() const
 		{
 			const Vec3f le = _color * _power;
-			return le / 4.f * PIf;
+			return le;
 		}
 	};
 } // namespace RT_ISICG

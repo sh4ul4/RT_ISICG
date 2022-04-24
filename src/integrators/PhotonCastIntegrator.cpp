@@ -3,26 +3,24 @@
 
 namespace RT_ISICG
 {
-	void PhotonCastIntegrator::Li( const Scene &					 p_scene,
-									const Ray &						 p_ray,
-									const float						 p_tMin,
-									const float						 p_tMax,
-									const float						 p_nbLightSamples,
-									std::vector<PhotonKd3::Photon> & photons,
-									const BaseLight* bl) const
+	void PhotonCastIntegrator::Li( const Scene &					p_scene,
+								   const Ray &						p_ray,
+								   const float						p_tMin,
+								   const float						p_tMax,
+								   std::vector<PhotonKd3::Photon> & photons,
+								   const BaseLight *				bl ) const
 	{
-		LiRec( 0, false, 1.f, p_scene, p_ray, p_tMin + 0.01f, p_tMax, p_nbLightSamples, photons, bl );
+		LiRec( 0, false, 1.f, p_scene, p_ray, p_tMin + 0.01f, p_tMax, photons, bl );
 	}
 
-	void PhotonCastIntegrator::LiRec( const float						depth,
-									   const bool						inside,
-									   const float						refractIdx,
-									   const Scene &					p_scene,
-									   const Ray &						p_ray,
-									   const float						p_tMin,
-									   const float						p_tMax,
-									   const float						p_nbLightSamples,
-									   std::vector<PhotonKd3::Photon> & photons,
+	void PhotonCastIntegrator::LiRec( const float					   depth,
+									  const bool					   inside,
+									  const float					   refractIdx,
+									  const Scene &					   p_scene,
+									  const Ray &					   p_ray,
+									  const float					   p_tMin,
+									  const float					   p_tMax,
+									  std::vector<PhotonKd3::Photon> & photons,
 									  const BaseLight *				   bl ) const
 	{
 		HitRecord hitRecord;
@@ -33,14 +31,14 @@ namespace RT_ISICG
 			if ( hitRecord._object->getMaterial()->isMirror() && depth <= _nbBounces )
 			{
 				LiRec( depth + 1,
-							  inside,
-							  refractIdx,
-							  p_scene,
-							  Ray( hitRecord._point, glm::reflect( p_ray.getDirection(), hitRecord._normal ) ),
-							  p_tMin,
-							  p_tMax,
-							  p_nbLightSamples,
-							  photons,bl );
+					   inside,
+					   refractIdx,
+					   p_scene,
+					   Ray( hitRecord._point, glm::reflect( p_ray.getDirection(), hitRecord._normal ) ),
+					   p_tMin,
+					   p_tMax,
+					   photons,
+					   bl );
 			}
 			// transparent material
 			else if ( hitRecord._object->getMaterial()->isTransparent() && depth <= _nbBounces )
@@ -55,14 +53,14 @@ namespace RT_ISICG
 				if ( ( glm::asin( 1.f / eta ) < glm::acos( cosThetaIn ) ) && ( ni > no ) )
 				{
 					LiRec( depth + 1.f,
-								  inside,
-								  refractIdx,
-								  p_scene,
-								  Ray( hitRecord._point, reflectDir ),
-								  p_tMin,
-								  p_tMax,
-								  p_nbLightSamples,
-								  photons,bl );
+						   inside,
+						   refractIdx,
+						   p_scene,
+						   Ray( hitRecord._point, reflectDir ),
+						   p_tMin,
+						   p_tMax,
+						   photons,
+						   bl );
 				}
 				else
 				{
@@ -77,8 +75,8 @@ namespace RT_ISICG
 						   Ray( hitRecord._point, reflectDir ),
 						   p_tMin,
 						   p_tMax,
-						   p_nbLightSamples,
-						   tmp,bl );
+						   tmp,
+						   bl );
 					for ( const auto & p : tmp )
 						photons.emplace_back( p.pos, p.pow * R );
 					tmp.clear();
@@ -89,17 +87,15 @@ namespace RT_ISICG
 						   Ray( hitRecord._point, refractDir ),
 						   p_tMin,
 						   p_tMax,
-						   p_nbLightSamples,
-						   tmp,bl );
+						   tmp,
+						   bl );
 					for ( const auto & p : tmp )
 						photons.emplace_back( p.pos, p.pow * ( 1.f - R ) );
 				}
 			}
-			else if (depth > 1)
+			else if ( depth > 1 )
 			{
-				const float cosTheta = glm::dot( -p_ray.getDirection(), hitRecord._normal );
-				const Vec3f le		 = bl->getEmissionFlux() / p_nbLightSamples;
-				photons.emplace_back( hitRecord._point, le);
+				photons.emplace_back( hitRecord._point, bl->getEmissionFlux() );
 			}
 		}
 	}
