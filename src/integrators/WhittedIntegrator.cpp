@@ -3,8 +3,8 @@
 #include "WhittedIntegrator.hpp"
 #include "glm/geometric.hpp"
 
-#define SEMITRANSPARENCY 0
-#define PHOTONCAST 0
+#define SEMITRANSPARENCY 1
+#define PHOTONCAST 1
 
 namespace RT_ISICG
 {

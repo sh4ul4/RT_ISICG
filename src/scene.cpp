@@ -27,7 +27,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
-#define _CURRENT_TP 0xCAU
+#define _CURRENT_TP 0xDEADBEEF
 #define DATA_PATH "obj/"
 
 std::vector<float> RT_ISICG::Rand::diss;
@@ -365,7 +365,7 @@ namespace RT_ISICG
 		// ================================================================
 		// Add lights.
 		// ================================================================
-		_addGlobeLightObject( "lo", Vec3f( 2.f, 4.f, 2.f ), 0.6f, WHITE, BLUE, 20.f );
+		//_addGlobeLightObject( "lo", Vec3f( 2.f, 4.f, 2.f ), 0.6f, WHITE, BLUE, 20.f );
 		_addLight( new PointLight( Vec3f( -2.9f, 7.f, 0.f ), WHITE, 100.f ) );
 		_addLight( new PointLight( Vec3f( 2.9f, -2.9f, 0.f ), WHITE, 100.f ) );
 	}

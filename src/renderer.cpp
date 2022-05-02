@@ -6,7 +6,7 @@
 #include "utils/random.hpp"
 
 #include "PhotonCaster.hpp"
-#define PHOTONCAST 0
+#define PHOTONCAST 1
 
 //#define TP1_EX1
 //#define TP1_EX2 // without antialiasing

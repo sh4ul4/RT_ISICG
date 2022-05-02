@@ -19,6 +19,7 @@ namespace RT_ISICG
 		PhotonKd3			 kd3;
 		void				 cast( const Scene & p_scene )
 		{
+			kd3.photons.reserve( p_scene.getLights().size() * nPhotonsPerLight );
 #if CONSOLE_BAR
 			ConsoleProgressBar progressBar;
 			progressBar.start( p_scene.getLights().size() * nPhotonsPerLight, 50 );
@@ -48,9 +49,10 @@ namespace RT_ISICG
 					Vec3f pow = p.pow / nbPhotons;
 					if ( glm::length( pow ) < glm::epsilon<float>() ) continue;
 					// add calculated photons to kd-tree
-					kd3.photons.emplace_back( p.pos, pow );
+					kd3.photons.push_back( PhotonKd3::Photon(p.pos, pow) );
 				}
 			}
+			kd3.photons.shrink_to_fit();
 #if CONSOLE_BAR
 			progressBar.stop();
 #endif
