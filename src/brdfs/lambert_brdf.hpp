@@ -10,7 +10,6 @@ namespace RT_ISICG
 	  public:
 		LambertBRDF( const Vec3f & p_kd ) : _kd( p_kd ) {};
 
-		// * INV_PIf : could be done in the constructor...
 		inline Vec3f evaluate() const { return _kd * INV_PIf; }
 
 		inline const Vec3f & getKd() const { return _kd; }

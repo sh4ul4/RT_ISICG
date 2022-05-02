@@ -19,10 +19,10 @@ namespace RT_ISICG
 				   const Vec3f & color,
 				   const float	 power = 1.f );
 		LightSample sample( const Vec3f & p_point ) const;
-		Vec3f		getPos() const { return _position; }
-		Vec3f		getEmissionFlux() const // not finished
+		Vec3f		getPos() const { return Vec3f( _position + _u * randomFloat() + _v * randomFloat() ); }
+		Vec3f		getEmissionFlux() const
 		{
-			const Vec3f le = _color * _power;
+			const Vec3f le = (_color / 255.f) * _power;
 			return le;
 		}
 	};

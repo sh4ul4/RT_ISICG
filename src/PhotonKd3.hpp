@@ -137,7 +137,7 @@ namespace RT_ISICG
 			knearest.erase( knearest.begin() + it );
 		}
 
-		void knnRec( Node *				   root,
+		void knnRec( Node *		   root,
 					 const Vec3f &		   point,
 					 size_t				   index,
 					 const int			   k,

@@ -19,7 +19,6 @@ namespace RT_ISICG
 			)
 		{ // Attention à la comparaison avec 0
 			Vec3f po = point - p_ray.getOrigin();
-			//p_t = glm::dot( po, normal ) / d;
 			p_t = glm::dot(po, normal) / glm::dot( p_ray.getDirection(), normal );
 			return true;
 		}

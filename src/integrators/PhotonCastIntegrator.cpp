@@ -10,7 +10,7 @@ namespace RT_ISICG
 								   std::vector<PhotonKd3::Photon> & photons,
 								   const BaseLight *				bl ) const
 	{
-		LiRec( 0, false, 1.f, p_scene, p_ray, p_tMin + 0.01f, p_tMax, photons, bl );
+		LiRec( 0.f, false, 1.f, p_scene, p_ray, p_tMin + 0.01f, p_tMax, photons, bl );
 	}
 
 	void PhotonCastIntegrator::LiRec( const float					   depth,
@@ -27,10 +27,22 @@ namespace RT_ISICG
 		Vec3f	  res( 0.f );
 		if ( p_scene.intersect( p_ray, p_tMin, p_tMax, hitRecord ) )
 		{
+			if ( hitRecord._object->getLight() == bl )
+			{
+				LiRec( depth,
+					   inside,
+					   refractIdx,
+					   p_scene,
+					   Ray( hitRecord._point, p_ray.getDirection() ),
+					   p_tMin + 0.001f,
+					   p_tMax,
+					   photons,
+					   bl );
+			}
 			// mirror material
 			if ( hitRecord._object->getMaterial()->isMirror() && depth <= _nbBounces )
 			{
-				LiRec( depth + 1,
+				LiRec( depth + 1.f,
 					   inside,
 					   refractIdx,
 					   p_scene,
@@ -93,7 +105,7 @@ namespace RT_ISICG
 						photons.emplace_back( p.pos, p.pow * ( 1.f - R ) );
 				}
 			}
-			else if ( depth > 1 )
+			else if ( depth > 0.f )
 			{
 				photons.emplace_back( hitRecord._point, bl->getEmissionFlux() );
 			}

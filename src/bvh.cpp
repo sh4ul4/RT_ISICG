@@ -19,10 +19,8 @@ namespace RT_ISICG
 		Chrono chr;
 		chr.start();
 
-		///
 		_root = new BVHNode();
 		_buildRec( _root, 0, (unsigned int)_triangles->size(), 0 );
-		///
 
 		chr.stop();
 
@@ -229,7 +227,7 @@ namespace RT_ISICG
 					float t, utmp, vtmp;
 					if ( ( *_triangles )[ i ].intersect( p_ray, t, utmp, vtmp ) )
 					{
-						if ( t >= p_tMin && t < tClosest )
+						if ( t >= p_tMin && t < tClosest && t <= p_tMax )
 						{
 							tClosest = t;
 							hitTri	 = i;

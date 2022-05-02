@@ -170,7 +170,7 @@ namespace RT_ISICG
 
 	void Scene::tp6( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
-#define CONF 1
+#define CONF 0
 #define BIND_MTL 1
 #if CONF
 		cameraPosition = Vec3f( -250.f, 500.f, 330.f );
@@ -282,14 +282,14 @@ namespace RT_ISICG
 		_addObject( new ImplicitInterpolation( "interp4", surfaces4, 0.95f ) );
 		_attachMaterialToObject( "BluePlastic", "interp4" );
 
-		//std::vector<ImplicitSurface *> lens1Surfaces;
-		//lens1Surfaces.emplace_back( new ImplicitSphere( "_1", Vec3f( 0.f, 0.f, 2.99f ), 2.f ) );
-		//lens1Surfaces.emplace_back( new ImplicitCuboid( "_2", Vec3f( 0.f, 0.f, -1.f ), Vec3f( 1.f, 1.f, 2.f ) ) );
-		//std::vector<ImplicitSurface *> lens1Surfaces2;
-		//lens1Surfaces2.emplace_back( new ImplicitIntersection( "lens1", lens1Surfaces ) );
-		//lens1Surfaces2.emplace_back( new ImplicitCuboid( "_3", Vec3f( 0.1f, 0.f, 1.99f ), Vec3f( 0.1f, 0.1f, 3.f ) ) );
-		//_addObject( new ImplicitIntersection( "lens1", lens1Surfaces ) );
-		//_attachMaterialToObject( "LensMaterial1", "lens1" );
+		/*std::vector<ImplicitSurface *> lens1Surfaces;
+		lens1Surfaces.emplace_back( new ImplicitSphere( "_1", Vec3f( 0.f, 0.f, 2.99f ), 2.f ) );
+		lens1Surfaces.emplace_back( new ImplicitCuboid( "_2", Vec3f( 0.f, 0.f, -1.f ), Vec3f( 1.f, 1.f, 2.f ) ) );
+		std::vector<ImplicitSurface *> lens1Surfaces2;
+		lens1Surfaces2.emplace_back( new ImplicitIntersection( "lens1", lens1Surfaces ) );
+		lens1Surfaces2.emplace_back( new ImplicitCuboid( "_3", Vec3f( 0.1f, 0.f, 1.99f ), Vec3f( 0.1f, 0.1f, 3.f ) ) );
+		_addObject( new ImplicitIntersection( "lens1", lens1Surfaces ) );
+		_attachMaterialToObject( "LensMaterial1", "lens1" );*/
 
 		/*std::vector<ImplicitSurface *> lens2Surfaces;
 		lens2Surfaces.emplace_back( new ImplicitSphere( "_1", Vec3f( 0.f, 0.f, 1.f ), 1.f ) );
@@ -323,8 +323,6 @@ namespace RT_ISICG
 		// ================================================================
 		// Add objects.
 		// ================================================================
-		//_addObject( new Sphere( "ball", Vec3f( -0.5f, 3.f, -3.f ), 1.f ) );
-		//_attachMaterialToObject( "SemiTransparent", "ball" );
 		// Spheres .
 		_addObject( new Sphere( "bauch", Vec3f( 0.f, 0.5f, 8.f ), 3.f ) );
 		_attachMaterialToObject( "BluePlastic", "bauch" );
@@ -361,46 +359,45 @@ namespace RT_ISICG
 		_addObject( new Plane( "PlaneFront", Vec3f( 0.f, 0.f, 10.f ), Vec3f( 0.f, 0.f, -1.f ) ) );
 		_attachMaterialToObject( "GreenPlastic", "PlaneFront" );
 
+		#define BIND_TRANSPARENT_MTL 1
+		loadFileTriangleMesh( "Pool", DATA_PATH "mar.obj" );
+
 		// ================================================================
 		// Add lights.
 		// ================================================================
-		//_addGlobeLightObject( "lo", Vec3f( 2.f, 4.f, 2.f ), 0.6f, WHITE, BLUE, 20.f );
+		_addGlobeLightObject( "lo", Vec3f( 2.f, 4.f, 2.f ), 0.6f, WHITE, BLUE, 20.f );
 		_addLight( new PointLight( Vec3f( -2.9f, 7.f, 0.f ), WHITE, 100.f ) );
 		_addLight( new PointLight( Vec3f( 2.9f, -2.9f, 0.f ), WHITE, 100.f ) );
-		//_addLight( new PointLight( Vec3f( 0.f, 4.f, -6.f ), WHITE, 100.f ) );
-		//_addLight( new GlobeLight( Vec3f( -2.9f, 7.f, 0.f ), 0.6f, WHITE, 40.f ) );
-		//_addLight( new GlobeLight( Vec3f( 3.f, -2.f, 0.f ), 0.6f, WHITE, 40.f ) );
 	}
 
 	void Scene::caustics( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
-		cameraPosition = Vec3f( 0.f, 0.f, 0.f );
-		cameraLookAt   = Vec3f( 0.f, 0.f, 1.f );
+		cameraPosition = Vec3f( 0.f, 5.f, -5.f );
+		cameraLookAt   = Vec3f( 0.f, 1.f, 0.f );
 		_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f, 100.f, WHITE ) );
 		_addMaterial( new MirrorMaterial( "WhiteMirror" ) );
 		_addMaterial( new PlasticMaterial( "BluePlastic", BLUE, BLUE ) );
 		_addMaterial( new PlasticMaterial( "RedPlastic", RED, RED ) );
 		_addMaterial( new PlasticMaterial( "GreenPlastic", GREEN, GREEN ) );
+		_addMaterial( new PlasticMaterial( "WhitePlastic", WHITE, WHITE ) );
+
+		_addObject( new Sphere( "sphere1", Vec3f( -2.f, -2.f, 5.f ), 1.f ) );
+		_attachMaterialToObject( "WhiteTransparent", "sphere1" );
+		_addObject( new Sphere( "sphere2", Vec3f( -1.f, -2.f, 4.f ), 1.f ) );
+		_attachMaterialToObject( "WhiteTransparent", "sphere2" );
 
 		_addObject( new Plane( "PlaneGround", Vec3f( 0.f, -3.f, 0.f ), Vec3f( 0.f, 1.f, 0.f ) ) );
-		_attachMaterialToObject( "RedPlastic", "PlaneGround" );
+		_attachMaterialToObject( "GreenPlastic", "PlaneGround" );
 		_addObject( new Plane( "PlaneLeft", Vec3f( 5.f, 0.f, 0.f ), Vec3f( -1.f, 0.f, 0.f ) ) );
 		_attachMaterialToObject( "RedPlastic", "PlaneLeft" );
 		_addObject( new Plane( "PlaneCeiling", Vec3f( 0.f, 8.f, 0.f ), Vec3f( 0.f, -1.f, 0.f ) ) );
 		_attachMaterialToObject( "GreenPlastic", "PlaneCeiling" );
 		_addObject( new Plane( "PlaneRight", Vec3f( -5.f, 0.f, 0.f ), Vec3f( 1.f, 0.f, 0.f ) ) );
 		_attachMaterialToObject( "RedPlastic", "PlaneRight" );
-		_addObject( new Plane( "PlaneFront", Vec3f( 0.f, 0.f, 14.f ), Vec3f( 0.f, 0.f, -1.f ) ) );
+		_addObject( new Plane( "PlaneFront", Vec3f( 0.f, 0.f, 10.f ), Vec3f( 0.f, 0.f, -1.f ) ) );
 		_attachMaterialToObject( "GreenPlastic", "PlaneFront" );
-		
-		_addObject( new Sphere( "sphere1", Vec3f( -2.f, -2.f, 8.f ), 1.f ) );
-		_attachMaterialToObject( "WhiteTransparent", "sphere1" );
-		//_addObject( new Sphere( "sphere2", Vec3f( -1.f, -2.f, 6.f ), 1.f ) );
-		//_attachMaterialToObject( "WhiteTransparent", "sphere2" );
 
-		_addLight( new GlobeLight( Vec3f( 2.f, 0.f, 8.f ), 0.5f, WHITE, 50.f ) );
-		//_addLight( new PointLight( Vec3f( 2.f, 0.f, 8.f ), WHITE, 100.f ) );
-		//_addLight( new PointLight( cameraPosition, WHITE, 100.f ) );
+		_addLight( new PointLight( Vec3f( 0.f, -1.f, 6.f ), WHITE, 50.f ) );
 	}
 
 	Scene::Scene() { _addMaterial( new ColorMaterial( "default", WHITE ) ); }
@@ -489,9 +486,8 @@ namespace RT_ISICG
 				triMesh->addTriangle( face.mIndices[ 0 ], face.mIndices[ 1 ], face.mIndices[ 2 ] );
 			}
 
-			///
+			// build BVH for specific mesh
 			triMesh->buildBVH();
-			///
 
 			_addObject( triMesh );
 
@@ -518,6 +514,9 @@ namespace RT_ISICG
 #if BIND_MTL
 				_addMaterial( new PlasticMaterial( std::string( mtlName.C_Str() ), kd, ks ) );
 				_attachMaterialToObject( mtlName.C_Str(), meshName );
+#endif
+#if BIND_TRANSPARENT_MTL
+				_attachMaterialToObject( "WhiteTransparent", meshName );
 #endif
 			}
 

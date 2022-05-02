@@ -6,6 +6,7 @@
 #include "utils/random.hpp"
 
 #include "PhotonCaster.hpp"
+#define PHOTONCAST 0
 
 //#define TP1_EX1
 //#define TP1_EX2 // without antialiasing
@@ -47,14 +48,13 @@ namespace RT_ISICG
 
 	float Renderer::renderImage( const Scene & p_scene, const BaseCamera * p_camera, Texture & p_texture )
 	{
-		//////////////////
+#if PHOTONCAST
 		PhotonCaster pc;
 		pc.cast( p_scene );
 		if ( _integrator->getType() == IntegratorType::WHITTED_LIGHTING )
 			dynamic_cast<WhittedIntegrator *>( _integrator )->pc = &pc;
 		else std::cout << "not whitted lighting" << std::endl;
-		//exit( 0 );
-		//////////////////
+#endif
 #ifdef TP1_EX3
 		srand( time( 0 ) );
 #endif

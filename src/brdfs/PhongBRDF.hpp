@@ -10,7 +10,6 @@ namespace RT_ISICG
 	  public:
 		PhongBRDF( const Vec3f & p_ks, const float p_s ) : _ks( p_ks ), _s( p_s ) {};
 
-		// * INV_PIf : could be done in the constructor...
 		inline Vec3f evaluate( const Ray &		   p_ray,
 							   const HitRecord &   p_hitRecord,
 							   const LightSample & p_lightSample ) const

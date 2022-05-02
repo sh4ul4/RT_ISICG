@@ -4,7 +4,7 @@
 #include "glm/geometric.hpp"
 
 #define SEMITRANSPARENCY 0
-#define PHOTONCAST 1
+#define PHOTONCAST 0
 
 namespace RT_ISICG
 {
@@ -115,12 +115,14 @@ namespace RT_ISICG
 							{
 								tmp += _directLighting( p_ray, ls, hitRecord, cosTheta );
 							}
-#if PHOTONCAST
-							tmp += _indirectLighting( p_ray, ls, hitRecord, cosTheta );
-#endif
 						}
 						tmp /= p_nbLightSamples;
 						res += tmp;
+#if PHOTONCAST
+						const LightSample ls = bl->sample( hitRecord._point );
+						const Vec3f Lr = _indirectLighting( p_ray, ls, hitRecord, cosTheta );
+						res += Lr;
+#endif
 					}
 					else
 					{
@@ -131,7 +133,8 @@ namespace RT_ISICG
 							res += _directLighting( p_ray, ls, hitRecord, cosTheta );
 						}
 #if PHOTONCAST
-						res += _indirectLighting( p_ray, ls, hitRecord, cosTheta );
+						const Vec3f Lr = _indirectLighting( p_ray, ls, hitRecord, cosTheta );
+						res += Lr;
 #endif
 					}
 				}
@@ -159,20 +162,23 @@ namespace RT_ISICG
 												const float			cosTheta2 ) const
 	{
 		std::vector<PhotonKd3::Node *> knearest;
-		const int					   k = 20; // number of nearest-neighbours to get
+		// number of nearest-neighbours to get
+		const int					   k = 20; // recommended values lay between 5 and 30
 		// knn-search
 		pc->kd3.knn( hitRecord._point, k, knearest );
-		float r = 0.f; // maximum radius to englobe all the nearest photons
+		float r = glm::epsilon<float>(); // maximum radius to englobe all the nearest photons
 		Vec3f powSum( 0.f );
 		// add photon-effects together
 		for ( auto node : knearest )
 		{
 			float d = glm::distance( node->p.pos, hitRecord._point );
 			if ( d > r ) r = d;
-			powSum += hitRecord._object->getMaterial()->shade( ray, hitRecord, ls ) * node->p.pow;
+			const float cosTheta = glm::dot( -ls._direction, hitRecord._normal );
+			powSum += ( 1.f / cbrtf( d ) )
+					  * ( hitRecord._object->getMaterial()->shade( ray, hitRecord, ls ) * node->p.pow );
 		}
 		// normalize power
 		const Vec3f Lr = ( powSum / ( PIf * r * r ) );
-		return glm::clamp( Lr, 0.f, 255.f );
+		return abs( Lr );
 	}
 } // namespace RT_ISICG

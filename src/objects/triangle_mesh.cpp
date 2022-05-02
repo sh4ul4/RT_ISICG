@@ -1,7 +1,7 @@
 #include "triangle_mesh.hpp"
 
-#define AABB_CHECK
-//#define BVH_CHECK
+//#define AABB_CHECK
+#define BVH_CHECK
 
 namespace RT_ISICG
 {
