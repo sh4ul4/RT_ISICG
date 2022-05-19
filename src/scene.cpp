@@ -30,7 +30,7 @@
 
 // choix de la scène
 // 1, 2, 3, 4, 5, 6, 7, 0xDEADBEEF, 0xFACADE, 0xCAU, 0xF
-#define _CURRENT_TP 0xCAU
+#define _CURRENT_TP 0xDEADBEEF
 
 #define DATA_PATH "obj/"
 
@@ -539,21 +539,26 @@ namespace RT_ISICG
 				aiString  texturePath;
 				if ( tr == 0.f )
 				{
+					std::cout << "transparent" << std::endl;
 					_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f, 100.f, WHITE ) );
 					_attachMaterialToObject( "WhiteTransparent", meshName );
 				}
 				else if ( mtl->GetTexture( aiTextureType_DIFFUSE, 0, &texturePath ) == AI_SUCCESS )
 				{
+					std::cout << "texture" << std::endl;
 					std::string path = p_filePath + texturePath.C_Str();
 					_addMaterial( new TextureMaterial( std::string( mtlName.C_Str() ), path ) );
 					_attachMaterialToObject( mtlName.C_Str(), meshName );
 				}
 				else
 				{
+					std::cout << "else" << std::endl;
+#if BIND_TRANSPARENT_MTL
+					_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f, 100.f, WHITE ) );
+					_attachMaterialToObject( "WhiteTransparent", meshName );
+#else
 					_addMaterial( new PlasticMaterial( std::string( mtlName.C_Str() ), kd, ks ) );
 					_attachMaterialToObject( mtlName.C_Str(), meshName );
-#if BIND_TRANSPARENT_MTL
-					_attachMaterialToObject( "WhiteTransparent", meshName );
 #endif
 				}
 			}

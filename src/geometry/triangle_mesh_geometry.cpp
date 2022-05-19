@@ -23,11 +23,16 @@ namespace RT_ISICG
 
 	const Vec2f & TriangleMeshGeometry::getInterpolatedTextureCoords( const float u, const float v ) const
 	{
-		return ( 1.f - u - v ) * _refMesh->_uvs[ _v0 ] + u * _refMesh->_uvs[ _v1 ] + v * _refMesh->_uvs[ _v2 ];
+		if ( _refMesh->_uvs.size() == 0 ) return Vec2f( 0.f );
+		const Vec2f uv0( _refMesh->_uvs[ _v0 ] );
+		const Vec2f uv1( _refMesh->_uvs[ _v1 ] );
+		const Vec2f uv2( _refMesh->_uvs[ _v2 ] );
+		return ( 1.f - u - v ) * uv0 + u * uv1 + v * uv2;
 	}
 
 	void TriangleMeshGeometry::getUvs( std::array<float, 6> & arr) const
 	{
+		if ( _refMesh->_uvs.size() == 0 ) return;
 		arr = { _refMesh->_uvs[ _v0 ].x, _refMesh->_uvs[ _v0 ].y, _refMesh->_uvs[ _v1 ].x,
 				_refMesh->_uvs[ _v1 ].y, _refMesh->_uvs[ _v2 ].x, _refMesh->_uvs[ _v2 ].y };
 	}

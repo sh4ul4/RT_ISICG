@@ -4,7 +4,7 @@
 #include "glm/geometric.hpp"
 
 #define SEMITRANSPARENCY 0
-#define PHOTONCAST 0
+#define PHOTONCAST 1
 
 namespace RT_ISICG
 {
