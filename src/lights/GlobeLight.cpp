@@ -11,7 +11,6 @@ namespace RT_ISICG
 	}
 
 	bool GlobeLight::intersectGlobe(float& _t1, const Vec3f& D, const Vec3f& O) const {
-		/// TODO !
 		Vec3f C = _position;
 		float _t2;
 		float beta = 2.f * ( glm::dot( D, O - C ) );

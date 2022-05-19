@@ -11,7 +11,6 @@ namespace RT_ISICG
 		HitRecord hitRecord;
 		if ( p_scene.intersect( p_ray, p_tMin, p_tMax, hitRecord ) )
 		{
-			/// TODO ! cos theta...
 			float cosTheta		= glm::dot( -p_ray.getDirection(), hitRecord._normal );
 			float diffuseFactor = std::max( cosTheta, 0.f );
 			return diffuseFactor * hitRecord._object->getMaterial()->getFlatColor();
