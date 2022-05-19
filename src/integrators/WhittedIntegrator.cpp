@@ -3,8 +3,8 @@
 #include "WhittedIntegrator.hpp"
 #include "glm/geometric.hpp"
 
-#define SEMITRANSPARENCY 1
-#define PHOTONCAST 1
+#define SEMITRANSPARENCY 0
+#define PHOTONCAST 0
 
 namespace RT_ISICG
 {
@@ -14,7 +14,10 @@ namespace RT_ISICG
 								 const float   p_tMax,
 								 const float   p_nbLightSamples ) const
 	{
-		return LiRec( 0, false, 1.f, p_scene, p_ray, p_tMin + 0.01f, p_tMax, p_nbLightSamples );
+		HitRecord hitRecord;
+		hitRecord._pixelConeRad = 0.005f;
+		hitRecord._pixelConeAlpha = glm::radians(0.0005f);
+		return LiRec( 0, false, 1.f, p_scene, p_ray, p_tMin + 0.01f, p_tMax, hitRecord, p_nbLightSamples );
 	}
 
 	Vec3f WhittedIntegrator::LiRec( const float	  depth,
@@ -24,22 +27,23 @@ namespace RT_ISICG
 									const Ray &	  p_ray,
 									const float	  p_tMin,
 									const float	  p_tMax,
+									HitRecord& hitRecord,
 									const float	  p_nbLightSamples ) const
 	{
-		HitRecord hitRecord;
-		Vec3f	  res( 0.f );
+		Vec3f res( 0.f );
 		if ( p_scene.intersect( p_ray, p_tMin, p_tMax, hitRecord ) )
 		{
 			// mirror material
 			if ( hitRecord._object->getMaterial()->isMirror() && depth <= _nbBounces )
 			{
-				res += LiRec( depth + 1,
+				res += LiRec( depth + 1.f,
 							  inside,
 							  refractIdx,
 							  p_scene,
 							  Ray( hitRecord._point, glm::reflect( p_ray.getDirection(), hitRecord._normal ) ),
 							  p_tMin,
 							  p_tMax,
+							  hitRecord,
 							  p_nbLightSamples );
 			}
 			// transparent material
@@ -61,6 +65,7 @@ namespace RT_ISICG
 								  Ray( hitRecord._point, reflectDir ),
 								  p_tMin,
 								  p_tMax,
+								  hitRecord,
 								  p_nbLightSamples );
 				}
 				else
@@ -76,6 +81,7 @@ namespace RT_ISICG
 										Ray( hitRecord._point, reflectDir ),
 										p_tMin,
 										p_tMax,
+										hitRecord,
 										p_nbLightSamples )
 						   + ( 1.f - R )
 								 * LiRec( depth + 1.f,
@@ -85,6 +91,7 @@ namespace RT_ISICG
 										  Ray( hitRecord._point, refractDir ),
 										  p_tMin,
 										  p_tMax,
+										  hitRecord,
 										  p_nbLightSamples );
 #if SEMITRANSPARENCY
 					const float maxDepth	 = hitRecord._object->getMaxDepth();
@@ -120,7 +127,7 @@ namespace RT_ISICG
 						res += tmp;
 #if PHOTONCAST
 						const LightSample ls = bl->sample( hitRecord._point );
-						const Vec3f Lr = _indirectLighting( p_ray, ls, hitRecord, cosTheta );
+						const Vec3f		  Lr = _indirectLighting( p_ray, ls, hitRecord, cosTheta );
 						res += Lr;
 #endif
 					}

@@ -18,6 +18,5 @@ namespace RT_ISICG
 		Vec3f		  _center;
 		float		  _radius;
 		virtual float _sdf( const Vec3f & p_point ) const { return glm::distance( p_point, _center ) - _radius; }
-		virtual Vec3f _evaluateNormal( const Vec3f & p_point ) const { return glm::normalize( p_point - _center ); }
 	};
 } // namespace RT_ISICG

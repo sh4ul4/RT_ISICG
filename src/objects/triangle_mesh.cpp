@@ -42,7 +42,9 @@ namespace RT_ISICG
 			p_hitRecord.faceNormal( p_ray.getDirection() );
 			p_hitRecord._distance = tClosest;
 			p_hitRecord._object	  = this;
-
+			p_hitRecord._uv		  = _triangles[ hitTri ].getInterpolatedTextureCoords( u, v );
+			p_hitRecord._pixelConeRad += p_hitRecord._distance * glm::tan( p_hitRecord._pixelConeAlpha );
+			_triangles[ hitTri ].getUvs(p_hitRecord._textureFootprint);
 			return true;
 		}
 		return false;

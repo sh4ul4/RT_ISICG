@@ -4,6 +4,7 @@
 #include "hit_record.hpp"
 #include "lights/light_sample.hpp"
 #include "ray.hpp"
+#include "texture.hpp"
 
 namespace RT_ISICG
 {
@@ -11,7 +12,7 @@ namespace RT_ISICG
 	{
 	  public:
 		BaseMaterial() = delete;
-		BaseMaterial( const std::string & p_name ) : _name( p_name ) {}
+		BaseMaterial( const std::string & p_name) : _name( p_name ) {}
 		virtual ~BaseMaterial() = default;
 
 		virtual Vec3f shade( const Ray &		 p_ray,
@@ -25,6 +26,8 @@ namespace RT_ISICG
 		virtual bool isMirror() const { return false; }
 
 		virtual bool isTransparent() const { return false; }
+
+		virtual bool isTextured() const { return false; }
 
 		virtual float getIOR() const { return 1.f; }
 

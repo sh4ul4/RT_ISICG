@@ -304,5 +304,8 @@
     <ClInclude Include="src\PhotonKd3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\materials\TextureMaterial.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

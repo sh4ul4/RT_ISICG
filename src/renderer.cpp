@@ -6,7 +6,7 @@
 #include "utils/random.hpp"
 
 #include "PhotonCaster.hpp"
-#define PHOTONCAST 1
+#define PHOTONCAST 0
 
 //#define TP1_EX1
 //#define TP1_EX2 // without antialiasing
@@ -77,8 +77,6 @@ namespace RT_ISICG
 				for ( int raycntr = 0; raycntr < _nbPixelSamples; raycntr++ )
 				{
 #if __ALEA__
-					//int			aleax = rand() % _nbPixelSamples;
-					//int			aleay = rand() % _nbPixelSamples;
 					const float p_sx  = ( i + randomFloat() ) / ( width - 1 );
 					const float p_sy  = ( j + randomFloat() ) / ( height - 1 );
 					const Ray	ray	  = p_camera->generateRay( p_sx, p_sy );

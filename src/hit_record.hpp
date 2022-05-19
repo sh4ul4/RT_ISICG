@@ -2,6 +2,7 @@
 #define __RT_ISICG_HIT_RECORD__
 
 #include "defines.hpp"
+#include <array>
 
 namespace RT_ISICG
 {
@@ -10,10 +11,6 @@ namespace RT_ISICG
 	struct HitRecord
 	{
 		HitRecord() = default;
-		HitRecord( const Vec3f & p_point, const Vec3f & p_normal, const float p_distance, const BaseObject * p_object )
-			: _point( p_point ), _normal( p_normal ), _distance( p_distance ), _object( p_object )
-		{
-		}
 
 		void faceNormal( const Vec3f p_direction )
 		{
@@ -22,6 +19,10 @@ namespace RT_ISICG
 
 		Vec3f			   _point	 = VEC3F_ZERO;
 		Vec3f			   _normal	 = VEC3F_ZERO;
+		Vec2f			   _uv		 = VEC2F_ZERO;
+		float			   _pixelConeRad = 0.f;
+		float			   _pixelConeAlpha = 0.f;
+		std::array<float, 6> _textureFootprint = {};
 		float			   _distance = 0.f;
 		const BaseObject * _object	 = nullptr;
 	};

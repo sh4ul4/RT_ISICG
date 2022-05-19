@@ -23,11 +23,15 @@
 #include "materials/MirrorMaterial.hpp"
 #include "materials/TransparentMaterial.hpp"
 #include "materials/EmissiveMaterial.hpp"
+#include "materials/TextureMaterial.hpp"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
-#define _CURRENT_TP 0xDEADBEEF
+// choix de la scène
+// 1, 2, 3, 4, 5, 6, 7, 0xDEADBEEF, 0xFACADE, 0xCAU, 0xF
+#define _CURRENT_TP 0xCAU
+
 #define DATA_PATH "obj/"
 
 std::vector<float> RT_ISICG::Rand::diss;
@@ -171,18 +175,17 @@ namespace RT_ISICG
 	void Scene::tp6( Vec3f & cameraPosition, Vec3f & cameraLookAt )
 	{
 #define CONF 0
-#define BIND_MTL 1
 #if CONF
 		cameraPosition = Vec3f( -250.f, 500.f, 330.f );
 		cameraLookAt   = Vec3f( 0.f, 350.f, 100.f );
-		loadFileTriangleMesh( "conference", DATA_PATH "conference/conference.obj" );
+		loadFileTriangleMesh( "conference", DATA_PATH + std::string( "conference/" ), "conference.obj" );
 		_addLight(
 			new QuadLight( Vec3f( 900, 600, -300 ), Vec3f( -800.f, 0.f, 0.f ), Vec3f( 0.f, 0.f, 300.f ), WHITE, 20.f ) );
 #else
 		_addMaterial( new PlasticMaterial( "plastic", WHITE, WHITE ) );
 		cameraPosition = Vec3f( 0.f, 0.f, -6.f );
 		cameraLookAt   = Vec3f( 0.f, 0.f, 0.f );
-		loadFileTriangleMesh( "bunny", DATA_PATH "bunny.obj" );
+		loadFileTriangleMesh( "bunny", DATA_PATH, "bunny.obj" );
 		_attachMaterialToObject( "plastic", "bunny" );
 		_addLight( new PointLight( Vec3f( 0.f, 2.f, -6.f ), WHITE, 60.f ) );
 #endif
@@ -360,7 +363,7 @@ namespace RT_ISICG
 		_attachMaterialToObject( "GreenPlastic", "PlaneFront" );
 
 		#define BIND_TRANSPARENT_MTL 1
-		loadFileTriangleMesh( "Pool", DATA_PATH "mar.obj" );
+		loadFileTriangleMesh( "Pool", DATA_PATH, "mar.obj" );
 
 		// ================================================================
 		// Add lights.
@@ -398,6 +401,19 @@ namespace RT_ISICG
 		_attachMaterialToObject( "GreenPlastic", "PlaneFront" );
 
 		_addLight( new PointLight( Vec3f( 0.f, -1.f, 6.f ), WHITE, 50.f ) );
+	}
+
+	void Scene::textures( Vec3f & cameraPosition, Vec3f & cameraLookAt )
+	{
+		cameraPosition = Vec3f( -700.f, 160.f, 0.f );
+		cameraLookAt   = Vec3f( -690.f, 158.f, 0.f );
+		loadFileTriangleMesh( "test", DATA_PATH + std::string("test/"), "test.obj" );
+		//_addLight( new PointLight( Vec3f( -700.f, 80.f, 0.f ), WHITE, 1000000.f ) );
+		_addLight( new QuadLight( Vec3f( 800.f, 1000.f, -600.f ),
+								  Vec3f( -1800.f, 1000.f, 0.f ),
+								  Vec3f( 0.f, 1000.f, 1200.f ),
+								  Vec3f( 225.f, 157.f, 55.f ),
+								  0.2f ) );
 	}
 
 	Scene::Scene() { _addMaterial( new ColorMaterial( "default", WHITE ) ); }
@@ -442,19 +458,21 @@ namespace RT_ISICG
 		lenses( cameraPosition, cameraLookAt );
 #elif _CURRENT_TP == 0xCAU
 		caustics( cameraPosition, cameraLookAt );
+#elif _CURRENT_TP == 0xF
+		textures( cameraPosition, cameraLookAt );
 #endif
 	}
 
-	void Scene::loadFileTriangleMesh( const std::string & p_name, const std::string & p_path )
+	void Scene::loadFileTriangleMesh( const std::string & p_name, const std::string & p_filePath, const std::string & p_objPath )
 	{
-		std::cout << "Loading: " << p_path << std::endl;
+		std::cout << "Loading: " << p_filePath + p_objPath << std::endl;
 		Assimp::Importer importer;
 
 		// Read scene and triangulate meshes
 		const aiScene * const scene
-			= importer.ReadFile( p_path, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords );
+			= importer.ReadFile( p_filePath + p_objPath, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords );
 
-		if ( scene == nullptr ) { throw std::runtime_error( "Fail to load file: " + p_path ); }
+		if ( scene == nullptr ) { throw std::runtime_error( "Fail to load file: " + p_filePath + p_objPath ); }
 
 		unsigned int cptTriangles = 0;
 		unsigned int cptVertices  = 0;
@@ -462,7 +480,10 @@ namespace RT_ISICG
 		for ( unsigned int m = 0; m < scene->mNumMeshes; ++m )
 		{
 			const aiMesh * const mesh = scene->mMeshes[ m ];
-			if ( mesh == nullptr ) { throw std::runtime_error( "Fail to load file: " + p_path + ": mesh is null" ); }
+			if ( mesh == nullptr )
+			{
+				throw std::runtime_error( "Fail to load file: " + p_filePath + p_objPath + ": mesh is null" );
+			}
 
 			const std::string meshName = p_name + "_" + std::string( mesh->mName.C_Str() );
 			std::cout << "-- Load mesh " << m + 1 << "/" << scene->mNumMeshes << ": " << meshName << std::endl;
@@ -501,6 +522,7 @@ namespace RT_ISICG
 				Vec3f kd = WHITE;
 				Vec3f ks = BLACK;
 				float s	 = 0.f;
+				float tr = 0.f;
 
 				aiColor3D aiKd;
 				if ( mtl->Get( AI_MATKEY_COLOR_DIFFUSE, aiKd ) == AI_SUCCESS ) kd = Vec3f( aiKd.r, aiKd.g, aiKd.b );
@@ -508,16 +530,32 @@ namespace RT_ISICG
 				if ( mtl->Get( AI_MATKEY_COLOR_SPECULAR, aiKs ) == AI_SUCCESS ) ks = Vec3f( aiKs.r, aiKs.g, aiKs.b );
 				float aiS = 0.f;
 				if ( mtl->Get( AI_MATKEY_SHININESS, aiS ) == AI_SUCCESS ) s = aiS;
+				float Tr = 0.f;
+				if ( mtl->Get( AI_MATKEY_OPACITY, Tr ) == AI_SUCCESS ) tr = Tr;
 				aiString mtlName;
 				mtl->Get( AI_MATKEY_NAME, mtlName );
 
-#if BIND_MTL
-				_addMaterial( new PlasticMaterial( std::string( mtlName.C_Str() ), kd, ks ) );
-				_attachMaterialToObject( mtlName.C_Str(), meshName );
-#endif
+				aiTexture aiTex;
+				aiString  texturePath;
+				if ( tr == 0.f )
+				{
+					_addMaterial( new TransparentMaterial( "WhiteTransparent", 1.3f, 100.f, WHITE ) );
+					_attachMaterialToObject( "WhiteTransparent", meshName );
+				}
+				else if ( mtl->GetTexture( aiTextureType_DIFFUSE, 0, &texturePath ) == AI_SUCCESS )
+				{
+					std::string path = p_filePath + texturePath.C_Str();
+					_addMaterial( new TextureMaterial( std::string( mtlName.C_Str() ), path ) );
+					_attachMaterialToObject( mtlName.C_Str(), meshName );
+				}
+				else
+				{
+					_addMaterial( new PlasticMaterial( std::string( mtlName.C_Str() ), kd, ks ) );
+					_attachMaterialToObject( mtlName.C_Str(), meshName );
 #if BIND_TRANSPARENT_MTL
-				_attachMaterialToObject( "WhiteTransparent", meshName );
+					_attachMaterialToObject( "WhiteTransparent", meshName );
 #endif
+				}
 			}
 
 			std::cout << "-- [DONE] " << triMesh->getNbTriangles() << " triangles, " << triMesh->getNbVertices()

@@ -107,7 +107,7 @@ namespace RT_ISICG
 			}
 			else if ( depth > 0.f )
 			{
-				photons.emplace_back( hitRecord._point, bl->getEmissionFlux() );
+				photons.emplace_back( hitRecord._point - p_ray.getDirection() * 0.001f, bl->getEmissionFlux() );
 			}
 		}
 	}

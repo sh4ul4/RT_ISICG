@@ -24,6 +24,10 @@ namespace RT_ISICG
 
 		const Vec3f & getInterpolatedFaceNormal( const float u, const float v ) const;
 
+		const Vec2f & getInterpolatedTextureCoords( const float u, const float v ) const;
+
+		void getUvs( std::array<float, 6> & arr ) const;
+
 		void getVertices( Vec3f & a, Vec3f & b, Vec3f & c ) const;
 
 	  private:

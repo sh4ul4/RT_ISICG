@@ -242,6 +242,9 @@ namespace RT_ISICG
 					p_hitRecord._distance = tClosest;
 					p_hitRecord._normal	  = ( *_triangles )[ hitTri ].getInterpolatedFaceNormal( u, v );
 					p_hitRecord.faceNormal( p_ray.getDirection() );
+					p_hitRecord._uv = ( *_triangles )[ hitTri ].getInterpolatedTextureCoords( u, v );
+					p_hitRecord._pixelConeRad += p_hitRecord._distance * glm::tan( p_hitRecord._pixelConeAlpha );
+					( *_triangles )[ hitTri ].getUvs( p_hitRecord._textureFootprint );
 					return true;
 				}
 			}
@@ -250,6 +253,10 @@ namespace RT_ISICG
 				HitRecord l, r;
 				l._distance				  = INFINITY;
 				r._distance				  = INFINITY;
+				l._pixelConeRad	  = p_hitRecord._pixelConeRad;
+				l._pixelConeAlpha		  = p_hitRecord._pixelConeAlpha;
+				r._pixelConeRad			  = p_hitRecord._pixelConeRad;
+				r._pixelConeAlpha		  = p_hitRecord._pixelConeAlpha;
 				const bool intersectLeft  = _intersectRec( p_node->_left, p_ray, p_tMin, p_tMax, l );
 				const bool intersectRight = _intersectRec( p_node->_right, p_ray, p_tMin, p_tMax, r );
 				if ( intersectLeft || intersectRight )

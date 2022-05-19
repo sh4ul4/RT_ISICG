@@ -19,6 +19,7 @@ namespace RT_ISICG
 		PhotonKd3			 kd3;
 		void				 cast( const Scene & p_scene )
 		{
+			std::cout << "Casting photons" << std::endl;
 			kd3.photons.reserve( p_scene.getLights().size() * nPhotonsPerLight );
 #if CONSOLE_BAR
 			ConsoleProgressBar progressBar;

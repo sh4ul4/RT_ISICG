@@ -1,5 +1,6 @@
 #include "triangle_mesh_geometry.hpp"
 #include "objects/triangle_mesh.hpp"
+#include <array>
 
 //#define CULLING
 
@@ -18,6 +19,17 @@ namespace RT_ISICG
 	const Vec3f & TriangleMeshGeometry::getInterpolatedFaceNormal( const float u, const float v ) const
 	{
 		return ( 1.f - u - v ) * _refMesh->_normals[ _v0 ] + u * _refMesh->_normals[ _v1 ] + v * _refMesh->_normals[ _v2 ];
+	}
+
+	const Vec2f & TriangleMeshGeometry::getInterpolatedTextureCoords( const float u, const float v ) const
+	{
+		return ( 1.f - u - v ) * _refMesh->_uvs[ _v0 ] + u * _refMesh->_uvs[ _v1 ] + v * _refMesh->_uvs[ _v2 ];
+	}
+
+	void TriangleMeshGeometry::getUvs( std::array<float, 6> & arr) const
+	{
+		arr = { _refMesh->_uvs[ _v0 ].x, _refMesh->_uvs[ _v0 ].y, _refMesh->_uvs[ _v1 ].x,
+				_refMesh->_uvs[ _v1 ].y, _refMesh->_uvs[ _v2 ].x, _refMesh->_uvs[ _v2 ].y };
 	}
 
 	void TriangleMeshGeometry::getVertices( Vec3f & a, Vec3f & b, Vec3f & c ) const
